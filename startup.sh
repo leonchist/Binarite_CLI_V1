@@ -1,14 +1,15 @@
 #!/bin/bash
 set -e
 
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-DOCKER_IMAGE_URL=
+AWS_ACCESS_KEY_ID=$1
+AWS_SECRET_ACCESS_KEY=$2
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
   exit
 fi
+
+export DEBIAN_FRONTEND=noninteractive
 
 # 1. Setup the ulimit
 
@@ -36,18 +37,16 @@ echo \
 apt-get -q update
 apt-get -yq install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-docker run hello-world
-
 # 3. Setup AWS ECR
 
 apt-get -yq install awscli amazon-ecr-credential-helper
 
-mkdir -p ~/.docker/
-cat > ~/.docker/config.json <<EOF
-{
-	"credsStore": "ecr-login"
-}
-EOF
+# mkdir -p ~/.docker/
+# cat > ~/.docker/config.json <<EOF
+# {
+# 	"credsStore": "ecr-login"
+# }
+# EOF
 
 AWS_CONFIG_FILE=~/.aws/config
 AWS_CREDENTIAL_FILE=~/.aws/credentials
@@ -69,6 +68,12 @@ chmod 600 $AWS_CREDENTIAL_FILE
 
 aws ecr get-login-password --region us-east-2
 
+aws ecr get-login-password --region us-east-2| docker login --username AWS --password-stdin 655401350744.dkr.ecr.us-east-2.amazonaws.com
+
 # 4. Run the container
 
-docker pull $DOCKER_IMAGE_URL
+cd ~
+aws s3 cp s3://quark-deployment/quark-deployment.tar.gz /tmp
+tar xzvf /tmp/quark-deployment.tar.gz
+cd ~/docker-compose
+docker compose up -d
