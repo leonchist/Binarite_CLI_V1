@@ -12,6 +12,9 @@ resource "azurerm_resource_group" "rg" {
   name     = "QuarkTest"
   location = "West Europe"
   provider = azurerm.eu_west
+  tags = {
+    source = "terraform-dev"
+  }
 }
 
 # Virtual Network
@@ -59,11 +62,18 @@ resource "azurerm_network_interface" "nic" {
 
 # Virtual Machine
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "quark_vm"
+  name                = "quark-vm"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  size                = "Standard_M8ms"
+  #size                = "Standard_D64s_v3"
+  size                = "Standard_DC16s_v3"
+
   admin_username      = "adminuser"
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
+  
   network_interface_ids = [
     azurerm_network_interface.nic.id,
   ]
@@ -75,10 +85,33 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   source_image_reference {
     publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts-gen2"
     version   = "latest"
   }
 
   provider = azurerm.eu_west
+}
+
+variable "startup_script" {
+  type = string
+  default = "./startup.sh"
+}
+
+resource "azurerm_virtual_machine_extension" "deployment_script" {
+  name = "deployment-script"
+  virtual_machine_id = azurerm_linux_virtual_machine.vm.id
+  publisher = "Microsoft.Azure.Extensions"
+  type = "CustomScript"
+  type_handler_version = "2.0"
+
+  protected_settings = <<PROTECTED_SETTINGS
+  {
+    "script": "${base64encode(file(var.startup_script))}"
+  }
+  PROTECTED_SETTINGS
+}
+
+output "public-ip-for-compute-instance" {
+  value = azurerm_linux_virtual_machine.vm.public_ip_address
 }
