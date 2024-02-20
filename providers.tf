@@ -7,3 +7,7 @@ provider "azurerm" {
   features {}
   alias    = "eu_west"
 }
+
+provider "azurerm" {
+  features {}
+}
