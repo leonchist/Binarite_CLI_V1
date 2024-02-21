@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-AWS_ACCESS_KEY_ID=$1
-AWS_SECRET_ACCESS_KEY=$2
+PROVISION_FILENAME=$(basename ${PROVISION_URI})
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -73,7 +72,7 @@ aws ecr get-login-password --region us-east-2| docker login --username AWS --pas
 # 4. Run the container
 
 cd ~
-aws s3 cp s3://quark-deployment/quark-deployment.tar.gz /tmp
-tar xzvf /tmp/quark-deployment.tar.gz
+aws s3 cp ${PROVISION_URI} /tmp
+tar xzvf /tmp/$PROVISION_FILENAME
 cd ~/docker-compose
 docker compose up -d
