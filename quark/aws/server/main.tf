@@ -43,6 +43,24 @@ resource "aws_security_group_rule" "inbound_grafana" {
   cidr_blocks = [ "0.0.0.0/0" ]
 }
 
+resource "aws_security_group_rule" "inbound_quark" {
+  type = "ingress"
+  from_port = 5670
+  to_port = 5670
+  protocol = "TCP"
+  security_group_id = aws_security_group.sg.id
+  cidr_blocks = [ "0.0.0.0/0" ]
+}
+
+resource "aws_security_group_rule" "inbound_quark_metrics" {
+  type = "ingress"
+  from_port = 9898
+  to_port = 9898
+  protocol = "TCP"
+  security_group_id = aws_security_group.sg.id
+  cidr_blocks = [ "0.0.0.0/0" ]
+}
+
 resource "aws_security_group_rule" "outbound_all" {
   type = "egress"
   from_port = 0
