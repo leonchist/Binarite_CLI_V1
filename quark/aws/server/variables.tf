@@ -34,7 +34,7 @@ variable "vm_configuration" {
         name = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
       }
       startup_script = "./startup.sh"
-      provision_uri = "s3://quark-deployment/quark-deployment.tar.gz"
+      provision_uri = "s3://quark-deployment/quark-server-deployment.tar.gz"
     }
 }
 
