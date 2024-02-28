@@ -40,13 +40,6 @@ apt-get -yq install docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 
 apt-get -yq install awscli amazon-ecr-credential-helper
 
-# mkdir -p ~/.docker/
-# cat > ~/.docker/config.json <<EOF
-# {
-# 	"credsStore": "ecr-login"
-# }
-# EOF
-
 AWS_CONFIG_FILE=~/.aws/config
 AWS_CREDENTIAL_FILE=~/.aws/credentials
 mkdir -p ~/.aws/
@@ -64,8 +57,6 @@ EOF
 
 chmod 600 $AWS_CONFIG_FILE
 chmod 600 $AWS_CREDENTIAL_FILE
-
-aws ecr get-login-password --region us-east-2
 
 aws ecr get-login-password --region us-east-2| docker login --username AWS --password-stdin 655401350744.dkr.ecr.us-east-2.amazonaws.com
 
