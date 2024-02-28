@@ -26,7 +26,6 @@ variable "vpc_security_group_ids" {
 
 variable "vm_configuration" {
     type = object({
-      name = string
       source_image = object({
         publisher = string
         name = string
@@ -35,7 +34,6 @@ variable "vm_configuration" {
     })
 
     default = {
-      name = "aws_vm"
       
       source_image = {
         publisher = "099720109477" // "Canonical"
@@ -43,6 +41,19 @@ variable "vm_configuration" {
       }
       startup_script = "../../../scripts/startup.sh"
     }
+}
+
+variable "private_ip" {
+  description = ""
+  type = string
+  default = "10.0.1.100"
+}
+
+variable "vm_name" {
+  description = ""
+  type = string
+  default = "aws_vm"
+  
 }
 
 variable "vm_size" {
