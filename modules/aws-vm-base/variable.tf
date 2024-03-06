@@ -24,36 +24,21 @@ variable "vpc_security_group_ids" {
   type = set(string)
 }
 
-variable "vm_configuration" {
-    type = object({
-      source_image = object({
-        publisher = string
-        name = string
-      })
-      startup_script = string
-    })
-
-    default = {
-      
-      source_image = {
-        publisher = "099720109477" // "Canonical"
-        name = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
-      }
-      startup_script = "../../../scripts/startup.sh"
-    }
-}
-
 variable "private_ip" {
   description = ""
   type = string
   default = "10.0.1.100"
 }
 
+variable "vm_ami" {
+  description = ""
+  type = string  
+}
+
 variable "vm_name" {
   description = ""
   type = string
   default = "aws_vm"
-  
 }
 
 variable "vm_size" {
@@ -79,4 +64,8 @@ variable "aws_secrets" {
     })
 
     default = null
+}
+
+variable "vm_user_data" {
+  type = string
 }

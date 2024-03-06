@@ -59,6 +59,15 @@ resource "aws_security_group_rule" "inbound_quark_metrics" {
   cidr_blocks = [ "0.0.0.0/0" ]
 }
 
+resource "aws_security_group_rule" "inbound_rdp" {
+  type = "ingress"
+  from_port = 3389
+  to_port = 3389
+  protocol = "TCP"
+  security_group_id = aws_security_group.sg.id
+  cidr_blocks = [ "0.0.0.0/0" ]
+}
+
 resource "aws_security_group_rule" "outbound_all" {
   type = "egress"
   from_port = 0
