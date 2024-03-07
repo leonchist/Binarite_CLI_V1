@@ -8,9 +8,8 @@ module "network" {
 }
 
 resource "aws_key_pair" "ssh_key" {
-  key_name   = "gdc-hubert"
   public_key = file(var.public_key)
-
+  provider   = aws.us_west_1
 }
 
 module "quark-server1" {
@@ -83,3 +82,51 @@ resource "local_file" "windows_key_file" {
 #  private_ip = "10.0.1.50"
 #  vm_size = "c7i.4xlarge"
 #}
+
+resource "aws_lb" "quark_nlb" {
+  name               = "quark-nlb"
+  internal           = false
+  load_balancer_type = "network"
+  subnets            = [module.network.subnet_id] # Assuming the module.network returns subnet IDs
+  enable_cross_zone_load_balancing = true
+
+  provider = aws.us_west_1
+}
+
+resource "aws_lb_target_group" "quark_tg" {
+  name     = "quark-tg"
+  port     = 5670
+  protocol = "TCP"
+  vpc_id   = module.network.vpc_id
+
+  provider = aws.us_west_1
+}
+
+resource "aws_lb_target_group_attachment" "quark1_tga" {
+  target_group_arn = aws_lb_target_group.quark_tg.arn
+  target_id        = module.quark-server1.instance_id
+  port             = 5670
+
+  provider = aws.us_west_1
+}
+
+resource "aws_lb_target_group_attachment" "quark2_tga" {
+  target_group_arn = aws_lb_target_group.quark_tg.arn
+  target_id        = module.quark-server2.instance_id
+  port             = 5670
+
+  provider = aws.us_west_1
+}
+
+resource "aws_lb_listener" "quark_listener" {
+  load_balancer_arn = aws_lb.quark_nlb.arn
+  protocol          = "TCP"
+  port              = 9898
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.quark_tg.arn
+  }
+
+  provider = aws.us_west_1
+}
+

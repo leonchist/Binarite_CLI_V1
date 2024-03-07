@@ -15,8 +15,4 @@ module "us" {
 
   eip_us_west1_quark1 = aws_eip.us_west1_quark1.id
   eip_us_west1_quark2 = aws_eip.us_west1_quark2.id
-
-  providers = {
-    aws.us_west_1 = aws.us_west_1
-  }
 }

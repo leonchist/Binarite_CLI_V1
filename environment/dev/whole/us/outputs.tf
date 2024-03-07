@@ -19,13 +19,6 @@ output "quark_private_ips2" {
     value = module.quark-server2.vm_private_ips
 }
 
-output "quark_public_assigned_ip1" {
-  value = var.eip_us_west1_quark1
-}
-
-output "quark_public_assigned_ip2" {
-  value = var.eip_us_west1_quark2
-}
 
 #output "agents_public_ip" {
 #    description = ""
