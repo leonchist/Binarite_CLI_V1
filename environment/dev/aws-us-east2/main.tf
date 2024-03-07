@@ -47,11 +47,14 @@ resource "local_file" "windows_key_file" {
 
 module "eoc-bots" {
   source = "../../../modules/aws-vm-windows"
-  vm_name = "eoc-bots"
+  count = 10
+  vm_name = format("eoc-bots-%02d", count.index)
   ssh_key_name = aws_key_pair.windows-key-pair.id
-  startup_script = null
   vpc_security_group_ids = [ module.network.security_group_id ]
   subnet_id = module.network.subnet_id
-  private_ip = "10.0.1.50"
-  vm_size = "c7i.4xlarge"
+  private_ip = format("10.0.1.%d", 50+count.index)
+  vm_size = "c6i.4xlarge"
+  vm_user_data = file("./user_data.txt")
+  ami_name = "packer-windows-eoc*"
+  ami_owner_alias = ["self"]
 }
