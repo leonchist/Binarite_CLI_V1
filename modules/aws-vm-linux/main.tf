@@ -13,6 +13,7 @@ data "aws_ami" "linux_ami" {
   }
 }
 
+
 module "aws-vm-linux" {
   source = "../../modules/aws-vm-base"
   vm_ami = data.aws_ami.linux_ami.id
@@ -26,4 +27,5 @@ module "aws-vm-linux" {
   ssh_key_name = var.ssh_key_name
   subnet_id = var.subnet_id
   vm_user_data = templatefile(var.startup_script, { AWS_ACCESS_KEY_ID=var.aws_secrets.key_id, AWS_SECRET_ACCESS_KEY=var.aws_secrets.access_key, PROVISION_URI=var.provision_uri })
+  eip_allocation_id = var.eip_allocation_id
 }

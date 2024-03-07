@@ -23,3 +23,9 @@ resource "aws_instance" "vm" {
 
   tags = merge(var.env.tags, { Name = "${var.vm_name}"})
 }
+
+
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.vm.id
+  allocation_id = var.eip_allocation_id
+}
