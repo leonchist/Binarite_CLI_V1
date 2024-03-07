@@ -13,3 +13,8 @@ output "vm_private_ips" {
     description = "Private ips of the VM"
     value = module.aws-vm-windows.vm_private_ips
 }
+
+output "password_data" {
+    value = module.aws-vm-windows.password_data
+  
+}

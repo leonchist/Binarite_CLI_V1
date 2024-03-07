@@ -13,3 +13,7 @@ output "vm_private_ips" {
     description = "Private ips of the VM"
     value = ["${aws_instance.vm.*.private_ip}"]
 }
+
+output "password_data" {
+    value = aws_instance.vm.password_data
+}

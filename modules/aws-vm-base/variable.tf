@@ -27,7 +27,7 @@ variable "vpc_security_group_ids" {
 variable "private_ip" {
   description = ""
   type = string
-  default = "10.0.1.100"
+  default = null
 }
 
 variable "vm_ami" {
@@ -65,7 +65,16 @@ variable "aws_secrets" {
 
     default = null
 }
-
 variable "vm_user_data" {
   type = string
+}
+
+variable "vm_disk_size" {
+  type = number
+  default = 30
+}
+
+variable "vm_get_password" {
+  type = bool
+  default = false
 }

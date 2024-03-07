@@ -27,7 +27,7 @@ variable "vpc_security_group_ids" {
 variable "private_ip" {
   description = ""
   type = string
-  default = "10.0.1.100"
+  default = null
 }
 
 variable "vm_name" {
@@ -69,6 +69,7 @@ variable "ami_name" {
   default = "Windows_Server-2022-English-Full-Base-*"
 }
 
-variable "startup_script" {
+variable "vm_user_data" {
   type = string
+  
 }

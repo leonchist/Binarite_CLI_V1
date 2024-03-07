@@ -16,6 +16,12 @@ resource "aws_instance" "vm" {
   user_data = var.vm_user_data
   user_data_replace_on_change = true
 
+  get_password_data = var.vm_get_password
+
+  root_block_device {
+    volume_size = var.vm_disk_size
+  }
+
   network_interface {
      network_interface_id = aws_network_interface.nic.id
      device_index = 0
