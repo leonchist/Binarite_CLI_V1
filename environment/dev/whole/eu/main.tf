@@ -1,15 +1,15 @@
 module "network" {
     source = "../../../../modules/aws-network"
 
-    availability_zone = "us-west-1b"
+    availability_zone = "eu-central-1b"
     providers = {
-      aws = aws.us_west_1
+      aws = aws.eu_central_1
     }
 }
 
 resource "aws_key_pair" "ssh_key" {
   public_key = file(var.public_key)
-  provider   = aws.us_west_1
+  provider   = aws.eu_central_1
 }
 
 module "quark-server1" {
@@ -18,13 +18,13 @@ module "quark-server1" {
     vpc_security_group_ids = [ module.network.security_group_id ]
     subnet_id = module.network.subnet_id
     aws_secrets = var.aws_secrets
-    eip_allocation_id = var.eip_us_west1_quark1
+    eip_allocation_id = var.eip_eu_central1_quark1
     ssh_key_name = aws_key_pair.ssh_key.key_name
     private_ip = "10.0.1.100"
     startup_script = "../../../scripts/startup.sh"
 
     providers = {
-      aws = aws.us_west_1
+      aws = aws.eu_central_1
     }
 }
 
@@ -34,13 +34,13 @@ module "quark-server2" {
     vpc_security_group_ids = [ module.network.security_group_id ]
     subnet_id = module.network.subnet_id
     aws_secrets = var.aws_secrets
-    eip_allocation_id = var.eip_us_west1_quark2
+    eip_allocation_id = var.eip_eu_central1_quark2
     ssh_key_name = aws_key_pair.ssh_key.key_name
     private_ip = "10.0.1.101"
     startup_script = "../../../scripts/startup.sh"
 
     providers = {
-      aws = aws.us_west_1
+      aws = aws.eu_central_1
     }
 }
 
@@ -55,7 +55,7 @@ module "region-lb" {
   target2_id = module.quark-server2.instance_id
 
   providers = {
-    aws = aws.us_west_1
+    aws = aws.eu_central_1
   }
 }
 
