@@ -41,6 +41,15 @@ resource "aws_security_group_rule" "inbound_grafana" {
   cidr_blocks = [ "0.0.0.0/0" ]
 }
 
+resource "aws_security_group_rule" "inbound_prometheus" {
+  type = "ingress"
+  from_port = 9090
+  to_port = 9090
+  protocol = "TCP"
+  security_group_id = aws_security_group.sg.id
+  cidr_blocks = [ "0.0.0.0/0" ]
+}
+
 resource "aws_security_group_rule" "inbound_quark" {
   type = "ingress"
   from_port = 5670
