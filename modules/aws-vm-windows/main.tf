@@ -19,7 +19,7 @@ module "aws-vm-windows" {
   vm_name = var.vm_name
   vm_size = var.vm_size
 
-  vm_disk_size = 60
+  vm_disk_size = 64
 
   vm_get_password = true
 
