@@ -29,4 +29,6 @@ module "aws-vm-windows" {
   ssh_key_name = var.ssh_key_name
   subnet_id = var.subnet_id
   vm_user_data = var.vm_user_data
+
+  eip_allocation_id = var.eip_allocation_id
 }

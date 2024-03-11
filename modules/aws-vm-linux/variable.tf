@@ -16,7 +16,7 @@ variable "env" {
 
 variable "subnet_id" {
   description = "VPC Subnet ID to launch in."
-  type = string 
+  type = string
 }
 
 variable "vpc_security_group_ids" {
@@ -34,7 +34,7 @@ variable "vm_name" {
   description = ""
   type = string
   default = "aws_vm"
-  
+
 }
 
 variable "vm_size" {
@@ -76,4 +76,10 @@ variable "ami_name" {
 
 variable "startup_script" {
   type = string
+}
+
+variable "eip_allocation_id" {
+  description = "The allocation ID of the Elastic IP to associate with the instance"
+  type        = string
+  default = null
 }

@@ -13,6 +13,7 @@ data "aws_ami" "linux_ami" {
   }
 }
 
+
 module "aws-vm-linux" {
   source = "../../modules/aws-vm-base"
   vm_ami = data.aws_ami.linux_ami.id

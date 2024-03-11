@@ -16,14 +16,14 @@ variable "aws_secrets" {
   default = {"key_id":"AKIAZRGHW6ZMDXGHIUPW","access_key":"2Mm2vm07wuvgwWqeMxxU7j7lPEn+9P9FVRuSKgNf"}
 }
 
-variable "us_east2_quark1" {
-  description = "The Elastic IP address to associate with the EC2 instance Quark #1"
+variable "eip_us_west1_quark1" {
+  description = "The Elastic IP address to associate with the EC2 instance Quark #1 - eipalloc-019f4b7d29d49987d"
   type        = string
-  default     = "3.23.31.147"
+  default     = "52.8.123.0"
 }
 
-variable "us_east2_quark2" {
-  description = "The Elastic IP address to associate with the EC2 instance Quark #2"
+variable "eip_us_west1_quark2" {
+  description = "The Elastic IP address to associate with the EC2 instance Quark #2 - eipalloc-0bc33436e3a2c4718"
   type        = string
-  default     = "3.130.14.10"
+  default     = "52.8.215.250"
 }

@@ -17,6 +17,15 @@ resource "aws_key_pair" "ssh_key" {
   public_key = file(var.public_key)
 }
 
+resource "aws_eip" "us_east2_quark1" {
+  domain = "vpc"
+}
+resource "aws_eip" "us_east2_quark2" {
+  domain = "vpc"
+}
+
+
+
 module "quark-server" {
     source = "../../../../modules/aws-vm-linux"
     vm_name = format("quark-server-%d", 1+count.index)
@@ -24,6 +33,7 @@ module "quark-server" {
     vpc_security_group_ids = [ data.terraform_remote_state.network.outputs.security_group_id ]
     subnet_id = data.terraform_remote_state.network.outputs.subnet_id
     aws_secrets = var.aws_secrets
+    eip_allocation_id = aws_eip.us_east2_quark1.id
     ssh_key_name = aws_key_pair.ssh_key.key_name
     private_ip = format("10.0.1.%d", 100+count.index)
     startup_script = "../../../../scripts/startup.sh"
