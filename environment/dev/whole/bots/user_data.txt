@@ -1,0 +1,23 @@
+<powershell>
+
+Resize-Partition -DriveLetter C -Size $(Get-PartitionSupportedSize -DriveLetter C).SizeMax
+
+powershell.exe -ExecutionPolicy Bypass -Command 'aria2c -x8 https://unreal-template-dev.s3.eu-west-1.amazonaws.com/Edge+of+Chaos+v0.7.16+%5BBotUpdateRewrite%5D+%5B2024-03-07%5D+%5Bf401dac037%5D.zip -o eoc.zip -d $env:TEMP'
+
+powershell.exe -ExecutionPolicy Bypass -Command '7z.exe x -oC:\EoC $env:Temp\eoc.zip'
+
+powershell.exe -ExecutionPolicy Bypass -Command 'aria2c https://unreal-template-dev.s3.eu-west-1.amazonaws.com/StartAndKeepAlive.py -o bots.py -d C:\EoC'
+
+powershell.exe -ExecutionPolicy Bypass -Command 'nssm.exe install eoc-bots-blue python.exe'
+powershell.exe -ExecutionPolicy Bypass -Command 'nssm.exe set eoc-bots-blue AppParameters C:\EoC\bots.py C:\EoC\EOC_Alpha.exe -nullrhi -BotWorld -BotCycles=1 -BotDomain=Spawn1 -QuarkWorld=CinematicTest'
+powershell.exe -ExecutionPolicy Bypass -Command 'nssm.exe start eoc-bots-blue'
+
+powershell.exe -ExecutionPolicy Bypass -Command 'nssm.exe install eoc-bots-red python.exe'
+powershell.exe -ExecutionPolicy Bypass -Command 'nssm.exe set eoc-bots-red AppParameters C:\EoC\bots.py C:\EoC\EOC_Alpha.exe -nullrhi -BotWorld -BotCycles=1 -BotDomain=Spawn2 -QuarkWorld=CinematicTest'
+powershell.exe -ExecutionPolicy Bypass -Command 'nssm.exe start eoc-bots-red'
+
+powershell.exe -ExecutionPolicy Bypass -Command 'nssm.exe install eoc-bots-green python.exe'
+powershell.exe -ExecutionPolicy Bypass -Command 'nssm.exe set eoc-bots-green AppParameters C:\EoC\bots.py C:\EoC\EOC_Alpha.exe -nullrhi -BotWorld -BotCycles=1 -BotDomain=Spawn3 -QuarkWorld=CinematicTest
+powershell.exe -ExecutionPolicy Bypass -Command 'nssm.exe start eoc-bots-green'
+
+</powershell>
