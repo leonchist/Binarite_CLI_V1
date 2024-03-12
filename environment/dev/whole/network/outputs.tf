@@ -15,7 +15,7 @@ output "security_group_id_eu" {
 }
 
 output "subnet_id_eu" {
-    value = module.network-eu.subnet_id
+  value = module.network-eu.subnet_id
 }
 
 output "vpc_id_eu" {

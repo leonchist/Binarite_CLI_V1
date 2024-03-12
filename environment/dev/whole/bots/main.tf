@@ -24,11 +24,11 @@ resource "local_file" "windows_key_file" {
 
 data "aws_ami" "windows_ami-eu" {
   most_recent = true
-  owners = ["self"]
+  owners      = ["self"]
 
   filter {
     name   = "name"
-    values = [ "packer-windows-eoc*" ]
+    values = ["packer-windows-eoc*"]
   }
 
   filter {

@@ -21,7 +21,7 @@ data "terraform_remote_state" "quark" {
 }
 
 resource "aws_route53_zone" "main" {
-  name = "mg-gdc.link"
+  name              = "mg-gdc.link"
   delegation_set_id = "N00241192NTNWB5IFRQ3G"
 }
 
@@ -63,9 +63,9 @@ resource "aws_route53_record" "geo_subdomain_eu" {
 }
 
 resource "aws_route53_record" "latency_subdomain" {
-  zone_id = aws_route53_zone.main.zone_id
-  name    = "latency.mg-gdc.link"
-  type    = "A"
+  zone_id        = aws_route53_zone.main.zone_id
+  name           = "latency.mg-gdc.link"
+  type           = "A"
   set_identifier = "USWest1NLB"
 
   latency_routing_policy {
@@ -80,9 +80,9 @@ resource "aws_route53_record" "latency_subdomain" {
 }
 
 resource "aws_route53_record" "latency_subdomain_eu" {
-  zone_id = aws_route53_zone.main.zone_id
-  name    = "latency.mg-gdc.link"
-  type    = "A"
+  zone_id        = aws_route53_zone.main.zone_id
+  name           = "latency.mg-gdc.link"
+  type           = "A"
   set_identifier = "EUCentral1NLB"
 
   latency_routing_policy {
