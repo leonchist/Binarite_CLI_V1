@@ -78,8 +78,3 @@ variable "vm_get_password" {
   type = bool
   default = false
 }
-variable "eip_allocation_id" {
-  description = "The allocation ID of the Elastic IP to associate with the instance"
-  type        = string
-  default = null
-}

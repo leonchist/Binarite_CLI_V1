@@ -23,12 +23,8 @@ variable "port_listen" {
   type = number
 }
 
-variable "target1_id" {
-  type = string
-}
-
-variable "target2_id" {
-  type = string
+variable "quark_instance_ids" {
+  type = list(string)
 }
 
 

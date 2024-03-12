@@ -31,8 +31,4 @@ resource "aws_instance" "vm" {
 }
 
 
-resource "aws_eip_association" "eip_assoc" {
-  count = var.eip_allocation_id ? 1 : 0
-  instance_id   = aws_instance.vm.id
-  allocation_id = var.eip_allocation_id
-}
+

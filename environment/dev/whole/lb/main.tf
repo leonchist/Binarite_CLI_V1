@@ -1,5 +1,28 @@
+terraform {
+  backend "local" {
+    path = "../tf-states/lb.tfstate"
+  }
+}
+
+data "terraform_remote_state" "network" {
+  backend = "local"
+
+  config = {
+    path = "../tf-states/network.tfstate"
+  }
+}
+
+data "terraform_remote_state" "quark" {
+  backend = "local"
+
+  config = {
+    path = "../tf-states/quark.tfstate"
+  }
+}
+
 resource "aws_route53_zone" "main" {
   name = "mg-gdc.link"
+  delegation_set_id = "N00241192NTNWB5IFRQ3G"
 }
 
 resource "aws_route53_record" "geo_subdomain" {
@@ -15,8 +38,8 @@ resource "aws_route53_record" "geo_subdomain" {
   set_identifier = "USWest1NLB"
 
   alias {
-    name                   = var.nlb_us_dns
-    zone_id                = var.nlb_us_zone
+    name                   = module.region-lb-us.lb_dns_name
+    zone_id                = module.region-lb-us.lb_zone_id
     evaluate_target_health = true
   }
 }
@@ -33,8 +56,8 @@ resource "aws_route53_record" "geo_subdomain_eu" {
   }
 
   alias {
-    name                   = var.nlb_eu_dns
-    zone_id                = var.nlb_eu_zone
+    name                   = module.region-lb-eu.lb_dns_name
+    zone_id                = module.region-lb-eu.lb_zone_id
     evaluate_target_health = true
   }
 }
@@ -50,8 +73,8 @@ resource "aws_route53_record" "latency_subdomain" {
   }
 
   alias {
-    name                   = var.nlb_us_dns
-    zone_id                = var.nlb_us_zone
+    name                   = module.region-lb-us.lb_dns_name
+    zone_id                = module.region-lb-us.lb_zone_id
     evaluate_target_health = true
   }
 }
@@ -67,8 +90,8 @@ resource "aws_route53_record" "latency_subdomain_eu" {
   }
 
   alias {
-    name                   = var.nlb_eu_dns
-    zone_id                = var.nlb_eu_zone
+    name                   = module.region-lb-eu.lb_dns_name
+    zone_id                = module.region-lb-eu.lb_zone_id
     evaluate_target_health = true
   }
 }

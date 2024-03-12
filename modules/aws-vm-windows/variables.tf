@@ -57,16 +57,8 @@ variable "aws_secrets" {
     default = null
 }
 
-variable "ami_owner_alias" {
-  description = "Owner aliases of the image"
-  type = list(string)
-  default = ["amazon", "microsoft"]
-}
-
-variable "ami_name" {
-  description = "ami name to match"
+variable "ami_id" {
   type = string
-  default = "Windows_Server-2022-English-Full-Base-*"
 }
 
 variable "vm_user_data" {
