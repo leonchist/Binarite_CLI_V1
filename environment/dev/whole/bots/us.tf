@@ -21,3 +21,20 @@ module "eoc-bots-us" {
     aws = aws.us_west_1
   }
 }
+
+locals {
+  us_central1_bots_eips = [
+    "eipalloc-0f32a7a7b4ef4b072",
+    "eipalloc-071a9f62ae4048720",
+    "eipalloc-0248f1572e6e1171f",
+    "eipalloc-0fdbcbfde950c8b6e",
+    "eipalloc-022bbbcc578cdd07c"
+    ]
+}
+
+resource "aws_eip_association" "eip_assoc_bots_us" {
+  count         = var.instance_count_per_region
+  instance_id   = module.eoc-bots-us[count.index].instance_id
+  allocation_id = local.us_central1_bots_eips[count.index]
+  provider      = aws.us_west_1
+}

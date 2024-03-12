@@ -6,10 +6,9 @@ resource "aws_key_pair" "windows-key-pair-eu" {
 }
 
 
-
 module "eoc-bots-eu" {
   source                 = "../../../../modules/aws-vm-windows"
-  count                  = 5
+  count                  = var.instance_count_per_region
   vm_name                = format("tf-eoc-bots-%02d", count.index)
   ssh_key_name           = aws_key_pair.windows-key-pair-eu.id
   vpc_security_group_ids = [data.terraform_remote_state.network.outputs.security_group_id_eu]
@@ -23,4 +22,21 @@ module "eoc-bots-eu" {
   providers = {
     aws = aws.eu_central_1
   }
+}
+
+locals {
+  eu_central1_bots_eips = [
+    "eipalloc-062510f5a5ff21349",
+    "eipalloc-0f1026edc77a3eb5c",
+    "eipalloc-000d348ecae32e5b6",
+    "eipalloc-0bee6198d7043dd2e",
+    "eipalloc-0a556a5d315522662"
+    ]
+}
+
+resource "aws_eip_association" "eip_assoc_bots_eu" {
+  count         = var.instance_count_per_region
+  instance_id   = module.eoc-bots-eu[count.index].instance_id
+  allocation_id = local.eu_central1_bots_eips[count.index]
+  provider      = aws.eu_central_1
 }
