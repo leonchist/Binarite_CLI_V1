@@ -24,19 +24,9 @@ module "eoc-bots-eu" {
   }
 }
 
-locals {
-  eu_central1_bots_eips = [
-    "eipalloc-062510f5a5ff21349",
-    "eipalloc-0f1026edc77a3eb5c",
-    "eipalloc-000d348ecae32e5b6",
-    "eipalloc-0bee6198d7043dd2e",
-    "eipalloc-0a556a5d315522662"
-    ]
-}
-
 resource "aws_eip_association" "eip_assoc_bots_eu" {
   count         = var.instance_count_per_region
   instance_id   = module.eoc-bots-eu[count.index].instance_id
-  allocation_id = local.eu_central1_bots_eips[count.index]
+  allocation_id = data.terraform_remote_state.elastic_ip.outputs.bots_eu[count.index].allocation_id
   provider      = aws.eu_central_1
 }

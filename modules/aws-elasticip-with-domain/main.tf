@@ -4,6 +4,9 @@ data "aws_route53_zone" "main" {
 
 resource "aws_eip" "elastic_ip" {
   domain = "vpc"
+  tags = {
+    "Name" : "tf-${var.subdomain}"
+  }
 }
 
 resource "aws_route53_record" "hostname" {

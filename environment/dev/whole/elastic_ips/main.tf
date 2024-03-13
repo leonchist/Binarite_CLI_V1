@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "gdc-terraform-infra"
+    key    = "prod/elastic_ip.tfstate"
+    region = "eu-central-1"
+  }
+}
+
 module "eoc_bots_eu" {
   count = var.bots_instance_count_per_region
   source = "../../../../modules/aws-elasticip-with-domain"
@@ -56,14 +64,14 @@ module "grafana_us" {
   }
 }
 
-module "agents_eu" {
-  source = "../../../../modules/aws-elasticip-with-domain"
-  domain = "mg-gdc.link"
-  subdomain = "agents-eu"
-  providers = {
-    aws = aws.eu_central_1
-  }
-}
+# module "agents_eu" {
+#   source = "../../../../modules/aws-elasticip-with-domain"
+#   domain = "mg-gdc.link"
+#   subdomain = "agents-eu"
+#   providers = {
+#     aws = aws.eu_central_1
+#   }
+# }
 
 module "agents_us" {
   source = "../../../../modules/aws-elasticip-with-domain"

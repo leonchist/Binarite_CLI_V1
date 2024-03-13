@@ -4,7 +4,6 @@ resource "aws_key_pair" "ssh_key_us" {
 }
 
 module "quark-agents-us" {
-  count   = 1
   source  = "../../../../modules/aws-vm-linux"
   vm_name = "tf-agents-us"
 
@@ -21,4 +20,10 @@ module "quark-agents-us" {
   providers = {
     aws = aws.us_west_1
   }
+}
+
+resource "aws_eip_association" "eip_assoc_agents_us" {
+  instance_id   = module.quark-agents-us.instance_id
+  allocation_id = data.terraform_remote_state.elastic_ip.outputs.agents_us.allocation_id
+  provider      = aws.us_west_1
 }

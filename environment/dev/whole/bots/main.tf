@@ -15,6 +15,15 @@ data "terraform_remote_state" "network" {
   }
 }
 
+data "terraform_remote_state" "elastic_ip" {
+  backend = "s3"
+  config = {
+    bucket = "gdc-terraform-infra"
+    key    = "prod/elastic_ip.tfstate"
+    region = "eu-central-1"
+  }
+}
+
 resource "tls_private_key" "rsa-windows-key" {
   algorithm = "RSA"
   rsa_bits  = 4096
