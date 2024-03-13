@@ -10,6 +10,7 @@ resource "aws_lb_target_group" "quark_tg" {
   port     = var.port_listen
   protocol = "TCP"
   vpc_id   = var.vpc_id
+  target_type = "ip"
 
   health_check {
     protocol           = "TCP"
@@ -23,9 +24,9 @@ resource "aws_lb_target_group" "quark_tg" {
 }
 
 resource "aws_lb_target_group_attachment" "quark_tga" {
-  count = length(var.quark_instance_ids)
+  count = length(var.target_ips)
   target_group_arn = aws_lb_target_group.quark_tg.arn
-  target_id        = var.quark_instance_ids[count.index]
+  target_id        = var.target_ips[count.index]
   port             = var.port_listen
 }
 
@@ -39,17 +40,3 @@ resource "aws_lb_listener" "quark_listener" {
   }
 
 }
-
-# resource "aws_eip_association" "eip_assoc" {
-#   count = var.eip_allocation_id ? 1 : 0
-#   instance_id   = aws_instance.vm.id
-#   allocation_id = var.eip_allocation_id
-# }
-
-
-# variable "eip_allocation_id" {
-#   description = "The allocation ID of the Elastic IP to associate with the instance"
-#   type        = string
-#   default = null
-# }
-
