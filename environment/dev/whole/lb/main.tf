@@ -24,13 +24,12 @@ data "terraform_remote_state" "quark" {
   }
 }
 
-resource "aws_route53_zone" "main" {
+data "aws_route53_zone" "main" {
   name              = "mg-gdc.link"
-  delegation_set_id = "N00241192NTNWB5IFRQ3G"
 }
 
 resource "aws_route53_record" "geo_subdomain" {
-  zone_id = aws_route53_zone.main.zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = "geo.mg-gdc.link"
   type    = "A"
 
@@ -49,7 +48,7 @@ resource "aws_route53_record" "geo_subdomain" {
 }
 
 resource "aws_route53_record" "geo_subdomain_eu" {
-  zone_id = aws_route53_zone.main.zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = "geo.mg-gdc.link"
   type    = "A"
 
@@ -67,7 +66,7 @@ resource "aws_route53_record" "geo_subdomain_eu" {
 }
 
 resource "aws_route53_record" "latency_subdomain" {
-  zone_id        = aws_route53_zone.main.zone_id
+  zone_id        = data.aws_route53_zone.main.zone_id
   name           = "latency.mg-gdc.link"
   type           = "A"
   set_identifier = "USWest1NLB"
@@ -84,7 +83,7 @@ resource "aws_route53_record" "latency_subdomain" {
 }
 
 resource "aws_route53_record" "latency_subdomain_eu" {
-  zone_id        = aws_route53_zone.main.zone_id
+  zone_id        = data.aws_route53_zone.main.zone_id
   name           = "latency.mg-gdc.link"
   type           = "A"
   set_identifier = "EUCentral1NLB"
