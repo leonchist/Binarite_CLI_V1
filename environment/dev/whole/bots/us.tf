@@ -15,7 +15,7 @@ module "eoc-bots-us" {
   private_ip             = format("10.0.1.%d", 50 + count.index)
   vm_size                = "c6i.4xlarge"
   vm_user_data           = file("./user_data.txt")
-  ami_id                 = aws_ami_copy.windows_ami-us.id
+  ami_id                 = data.aws_ami.windows_ami-us.id
 
   providers = {
     aws = aws.us_west_1
