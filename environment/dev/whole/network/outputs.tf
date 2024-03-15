@@ -21,3 +21,7 @@ output "subnet_id_eu" {
 output "vpc_id_eu" {
   value = module.network-eu.vpc_id
 }
+
+output "hosted_zone" {
+  value = aws_route53_zone.main
+}

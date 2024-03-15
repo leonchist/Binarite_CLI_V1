@@ -28,7 +28,7 @@ resource "aws_eip_association" "eip_assoc_quark_us" {
 
 module "grafana-prometheus-us" {
   source                 = "../../../../modules/aws-vm-linux"
-  vm_name                = "tf-grafana-prometheus-us"
+  vm_name                = "tf-grafana-prometheus"
   vpc_security_group_ids = [data.terraform_remote_state.network.outputs.security_group_id_us]
   subnet_id              = data.terraform_remote_state.network.outputs.subnet_id_us
   aws_secrets            = var.aws_secrets
