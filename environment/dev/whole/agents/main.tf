@@ -1,13 +1,16 @@
 terraform {
-  backend "local" {
-    path = "../tf-states/agents.tfstate"
+  backend "s3" {
+    bucket = "gdc-terraform-infra"
+    key    = "prod/agents.tfstate"
+    region = "eu-central-1"
   }
 }
 
 data "terraform_remote_state" "network" {
-  backend = "local"
-
+  backend = "s3"
   config = {
-    path = "../tf-states/network.tfstate"
+    bucket = "gdc-terraform-infra"
+    key    = "prod/network.tfstate"
+    region = "eu-central-1"
   }
 }

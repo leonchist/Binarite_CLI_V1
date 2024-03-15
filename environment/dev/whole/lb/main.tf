@@ -1,22 +1,26 @@
 terraform {
-  backend "local" {
-    path = "../tf-states/lb.tfstate"
+  backend "s3" {
+    bucket = "gdc-terraform-infra"
+    key    = "prod/lb.tfstate"
+    region = "eu-central-1"
   }
 }
 
 data "terraform_remote_state" "network" {
-  backend = "local"
-
+  backend = "s3"
   config = {
-    path = "../tf-states/network.tfstate"
+    bucket = "gdc-terraform-infra"
+    key    = "prod/network.tfstate"
+    region = "eu-central-1"
   }
 }
 
 data "terraform_remote_state" "quark" {
-  backend = "local"
-
+  backend = "s3"
   config = {
-    path = "../tf-states/quark.tfstate"
+    bucket = "gdc-terraform-infra"
+    key    = "prod/quark.tfstate"
+    region = "eu-central-1"
   }
 }
 
