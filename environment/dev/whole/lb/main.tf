@@ -25,7 +25,7 @@ data "terraform_remote_state" "quark" {
 }
 
 data "aws_route53_zone" "main" {
-  name              = "mg-gdc.link"
+  name = "mg-gdc.link"
 }
 
 resource "aws_route53_record" "geo_subdomain" {

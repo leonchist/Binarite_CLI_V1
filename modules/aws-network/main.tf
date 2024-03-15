@@ -18,72 +18,72 @@ resource "aws_route_table" "rt" {
 }
 
 resource "aws_security_group" "sg" {
-    vpc_id = aws_vpc.vnet.id
-    tags = var.env.tags
+  vpc_id = aws_vpc.vnet.id
+  tags   = var.env.tags
 }
 
 resource "aws_security_group_rule" "inbound_ssh" {
-  type = "ingress"
-  from_port = 22
-  to_port = 22
-  protocol = "TCP"
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "TCP"
   security_group_id = aws_security_group.sg.id
-  cidr_blocks = [ "0.0.0.0/0" ]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 
 resource "aws_security_group_rule" "inbound_grafana" {
-  type = "ingress"
-  from_port = 3000
-  to_port = 3000
-  protocol = "TCP"
+  type              = "ingress"
+  from_port         = 3000
+  to_port           = 3000
+  protocol          = "TCP"
   security_group_id = aws_security_group.sg.id
-  cidr_blocks = [ "0.0.0.0/0" ]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "inbound_prometheus" {
-  type = "ingress"
-  from_port = 9090
-  to_port = 9090
-  protocol = "TCP"
+  type              = "ingress"
+  from_port         = 9090
+  to_port           = 9090
+  protocol          = "TCP"
   security_group_id = aws_security_group.sg.id
-  cidr_blocks = [ "0.0.0.0/0" ]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "inbound_quark" {
-  type = "ingress"
-  from_port = 5670
-  to_port = 5670
-  protocol = "TCP"
+  type              = "ingress"
+  from_port         = 5670
+  to_port           = 5670
+  protocol          = "TCP"
   security_group_id = aws_security_group.sg.id
-  cidr_blocks = [ "0.0.0.0/0" ]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "inbound_quark_metrics" {
-  type = "ingress"
-  from_port = 9898
-  to_port = 9898
-  protocol = "TCP"
+  type              = "ingress"
+  from_port         = 9898
+  to_port           = 9898
+  protocol          = "TCP"
   security_group_id = aws_security_group.sg.id
-  cidr_blocks = [ "0.0.0.0/0" ]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "inbound_rdp" {
-  type = "ingress"
-  from_port = 3389
-  to_port = 3389
-  protocol = "TCP"
+  type              = "ingress"
+  from_port         = 3389
+  to_port           = 3389
+  protocol          = "TCP"
   security_group_id = aws_security_group.sg.id
-  cidr_blocks = [ "0.0.0.0/0" ]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_security_group_rule" "outbound_all" {
-  type = "egress"
-  from_port = 0
-  to_port = 0
-  protocol = -1
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = -1
   security_group_id = aws_security_group.sg.id
-  cidr_blocks = [ "0.0.0.0/0" ]
+  cidr_blocks       = ["0.0.0.0/0"]
 }
 
 resource "aws_subnet" "subnet" {

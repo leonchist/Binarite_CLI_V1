@@ -3,7 +3,7 @@ variable "lb_name" {
 }
 
 variable "lb_type" {
-  type = string
+  type    = string
   default = "network"
 }
 

@@ -6,15 +6,15 @@ resource "aws_lb" "quark_nlb" {
 }
 
 resource "aws_lb_target_group" "quark_tg" {
-  name     = "${var.lb_name}-tg"
-  port     = var.port_listen
-  protocol = "TCP"
-  vpc_id   = var.vpc_id
+  name        = "${var.lb_name}-tg"
+  port        = var.port_listen
+  protocol    = "TCP"
+  vpc_id      = var.vpc_id
   target_type = "ip"
 
   health_check {
-    protocol           = "TCP"
-    port               = "${var.port_healtcheck}"
+    protocol            = "TCP"
+    port                = var.port_healtcheck
     healthy_threshold   = 3
     unhealthy_threshold = 3
     timeout             = 5
@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "quark_tg" {
 }
 
 resource "aws_lb_target_group_attachment" "quark_tga" {
-  count = length(var.target_ips)
+  count            = length(var.target_ips)
   target_group_arn = aws_lb_target_group.quark_tg.arn
   target_id        = var.target_ips[count.index]
   port             = var.port_listen

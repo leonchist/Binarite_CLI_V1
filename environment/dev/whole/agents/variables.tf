@@ -11,6 +11,8 @@ variable "aws_secrets" {
     access_key = string
   })
 
-  #    default = null
-  default = { "key_id" : "AKIAZRGHW6ZMDXGHIUPW", "access_key" : "2Mm2vm07wuvgwWqeMxxU7j7lPEn+9P9FVRuSKgNf" }
+  default = {
+    "key_id" : "AKIAZRGHW6ZMDXGHIUPW",
+    "access_key" : "2Mm2vm07wuvgwWqeMxxU7j7lPEn+9P9FVRuSKgNf"
+  }
 }

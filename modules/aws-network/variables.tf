@@ -1,20 +1,20 @@
 variable "env" {
   type = object({
     tags = object({
-      env = string
+      env    = string
       source = string
     })
   })
 
   default = {
     tags = {
-      env = "dev"
+      env    = "dev"
       source = "terraform"
     }
   }
 }
 
 variable "availability_zone" {
-  type = string
+  type    = string
   default = "us-east-2a"
 }
