@@ -26,7 +26,7 @@ locals {
 resource "aws_eip_association" "eip_assoc_quark_eu" {
   count         = var.quark_server_count
   instance_id   = module.quark-servers-eu.instance_id[count.index]
-  allocation_id = local.eu_central1_quark_eips[count.index]
+  allocation_id = data.terraform_remote_state.elastic_ip.outputs.quark_eu[count.index].allocation_id
   provider      = aws.eu_central_1
 }
 
@@ -46,12 +46,8 @@ module "grafana-prometheus-eu" {
   }
 }
 
-locals {
-  eu_central1_grafana-eip = "eipalloc-0a1cec915965c56b1"
-}
-
 resource "aws_eip_association" "eip_assoc_grafana_eu" {
   instance_id   = module.grafana-prometheus-eu.instance_id
-  allocation_id = local.eu_central1_grafana-eip
+  allocation_id = data.terraform_remote_state.elastic_ip.outputs.grafana_eu.allocation_id
   provider      = aws.eu_central_1
 }

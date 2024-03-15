@@ -1,4 +1,4 @@
-output "vm_id" {
+output "instance_id" {
     description = "The ID of the VM"
     value = module.aws-vm-windows.vm_id
 }

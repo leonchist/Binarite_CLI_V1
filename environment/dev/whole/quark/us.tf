@@ -19,14 +19,10 @@ module "quark-servers-us" {
   }
 }
 
-locals {
-  us_west1_quark_eips = ["eipalloc-019f4b7d29d49987d", "eipalloc-0bc33436e3a2c4718"]
-}
-
 resource "aws_eip_association" "eip_assoc_quark_us" {
   count         = var.quark_server_count
   instance_id   = module.quark-servers-us.instance_id[count.index]
-  allocation_id = local.us_west1_quark_eips[count.index]
+  allocation_id = data.terraform_remote_state.elastic_ip.outputs.quark_us[count.index].allocation_id
   provider      = aws.us_west_1
 }
 
@@ -46,12 +42,8 @@ module "grafana-prometheus-us" {
   }
 }
 
-locals {
-  us_west1_grafana-eip = "eipalloc-018c7a8b9d91eb912"
-}
-
 resource "aws_eip_association" "eip_assoc_grafana_us" {
   instance_id   = module.grafana-prometheus-us.instance_id
-  allocation_id = local.us_west1_grafana-eip
+  allocation_id = data.terraform_remote_state.elastic_ip.outputs.grafana_us.allocation_id
   provider      = aws.us_west_1
 }

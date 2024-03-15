@@ -21,3 +21,10 @@ module "eoc-bots-us" {
     aws = aws.us_west_1
   }
 }
+
+resource "aws_eip_association" "eip_assoc_bots_us" {
+  count         = var.instance_count_per_region
+  instance_id   = module.eoc-bots-us[count.index].instance_id
+  allocation_id = data.terraform_remote_state.elastic_ip.outputs.bots_us[count.index].allocation_id
+  provider      = aws.us_west_1
+}
