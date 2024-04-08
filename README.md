@@ -40,7 +40,6 @@ You can set CLI command name by setting `COMMAND_NAME` variable in `.env` file.
     ```bash
     quark-cli help
     ```
-    ```
 
 5. **Terraform Initialization**: Run the following command to initialize Terraform modules:
 
@@ -69,7 +68,7 @@ You can set CLI command name by setting `COMMAND_NAME` variable in `.env` file.
 ## Key Files and Directories
 
 - `manager.sh`: Main script for managing infrastructure lifecycle.
-- `terraform/`: Directory containing Terraform configurations for AWS resources.
+- `terraform/`: Directory containing Terraform configurations for provider resources.
 - `ansible/`: Ansible playbooks and roles for software configuration.
 - `.env`: Environment variable file storing AWS credentials and configuration for `manager.sh`.
 
@@ -77,7 +76,4 @@ You can set CLI command name by setting `COMMAND_NAME` variable in `.env` file.
 
 Contributions to this project are welcome! Please submit pull requests or issues to improve the infrastructure code or documentation.
 
-## License
-
-[Specify your license here]
 
