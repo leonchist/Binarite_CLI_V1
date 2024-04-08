@@ -1,0 +1,56 @@
+---
+- name: Configure and deploy Grafana-Prometheus on EC2
+  hosts: grafana_prometheus_eu
+  become: yes
+  vars:
+    aws_access_key: "your_access_key"
+    aws_secret_key: "your_secret_key"
+    provision_uri: "s3://quark-deployment/prometheus-grafana.tar.gz"
+    aws_region: "us-east-2"
+
+  tasks:
+    - name: Setup system limits
+      blockinfile:
+        path: /etc/security/limits.conf
+        block: |
+          * soft nproc 65535
+          * hard nproc 65535
+          * soft nofile 65535
+          * hard nofile 65535
+
+    - name: Install Docker and Docker Compose
+      include_role:
+        name: geerlingguy.docker
+
+    - name: Setup AWS CLI and configure ECR
+      block:
+        - name: Install AWS CLI
+          command: apt-get install -y awscli
+
+        - name: Setup AWS credentials
+          template:
+            src: aws_credentials.j2
+            dest: ~/.aws/credentials
+          vars:
+            aws_access_key_id: "{{ aws_access_key }}"
+            aws_secret_access_key: "{{ aws_secret_key }}"
+
+        - name: Configure Docker to use ECR credential helper
+          copy:
+            dest: ~/.docker/config.json
+            content: |
+              {
+                "credsStore": "ecr-login"
+              }
+
+    - name: Download and extract provisioning package
+      unarchive:
+        src: "{{ provision_uri }}"
+        dest: "/tmp"
+        remote_src: yes
+        extra_opts: ["--gzip"]
+
+    - name: Run Docker Compose up
+      community.docker.docker_compose:
+        project_src: "/tmp/docker-compose"
+        state: present
