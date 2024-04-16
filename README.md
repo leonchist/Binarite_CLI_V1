@@ -2,75 +2,87 @@
 
 This repository contains the infrastructure as code (IaC) and configuration management setup for deploying and managing the Quark application, utilizing Terraform for infrastructure provisioning and Ansible for configuration management.
 
-## Structure
+## Overview
 
-- `terraform/`: Contains Terraform modules for provisioning AWS resources.
-    - `environment/`: Specific environment module configurations (e.g., network, agents).
-- `ansible/`: Contains Ansible playbooks and roles for configuring provisioned resources.
-- `scripts/`: Startup and utility scripts.
-- `setup.sh`: Installs CLI globally.
-- `manager.sh`: A script to manage Terraform modules and run Ansible playbooks.
-- `.env.template`: Template for environment variables needed by `manager.sh` (save as `.env`). 
+This CLI tool automates the management and deployment of infrastructure using Terraform. It simplifies tasks such as initializing, applying, destroying configurations, and managing environments.
+
+## Directory Structure
+
+├── setup.sh # Setup script to configure and install the CLI tool.  
+├── app/  
+│ ├── cli.sh # Main CLI script to handle commands.  
+│ ├── terraform.sh # Script containing Terraform functions.  
+│ └── setup/  
+│ ├──── install.sh # Script to install the CLI tool system-wide.  
+│ ├──── uninstall.sh # Script to uninstall the CLI tool.  
+│ └── methods/ # Directory for individual command scripts.  
+│ ├──── [method_name].sh # Individual file per each command  
+└── .env # Environment variables file. Auto-created on setup if does not exist.
+
 
 ## CLI name
 You can set CLI command name by setting `COMMAND_NAME` variable in `.env` file.
 
-## Setup
+## Installation
 
-1. **Install Dependencies**: Ensure you have Terraform and Ansible installed on your system. This project was tested with Terraform v0.14.7 and Ansible 2.9.10, but newer versions should also be compatible.
+To install the CLI tool, follow these steps:
+0. **Install Dependencies**: Ensure you have Terraform and Ansible installed on your system. This project was tested with Terraform v0.14.7 and Ansible 2.9.10, but newer versions should also be compatible.
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://yourrepository.com/path/to/repo.git
+   cd repo-directory```
+
 
 2. **Configure Environment Variables**:
-    - Copy `.env.template` to `.env`.
-    - Fill in your AWS credentials and desired command name for the manager script in `.env`.
+   - Copy `.env.template` to `.env`.
+   - Fill in your AWS credentials and desired command name for the manager script in `.env`.
 
     ```bash
     cp .env.template .env
     # Edit .env with your preferred editor
     ```
 
-3. **Install CLI**: Run the following command to initialize Terraform modules:
+3. **Set Permissions and Initialize**: Before running the setup script, ensure it has the necessary execution permissions:
 
     ```bash
-    chmod +x ./setup.sh 
+    chmod +x ./setup.sh
+    ```
+4. **Run Setup Script**: Execute the setup script which will configure permissions and install the CLI tool:
+
+    ```bash
     ./setup.sh
     ```
 
-4. **Help**: Run the following command to check available commands:
+## Usage
 
-    ```bash
-    quark-cli help
-    ```
+After installation, you can use the command specified in your `.env` file (`COMMAND_NAME`) to manage your infrastructure:
 
-5. **Terraform Initialization**: Run the following command to initialize Terraform modules:
+- **Initialize Modules**
+  ```bash
+  your_command_name init
+   ```
 
-    ```bash
-    quark-cli init all
-    ```
+- **Destroy Resources**
+  ```bash
+  your_command_name destroy [module_name|all]
+   ```
 
-6. **Infrastructure Provisioning**: To provision all infrastructure components, run:
+- **List Environments**
+  ```bash
+  your_command_name list_envs
+   ```
 
-    ```bash
-    quark-cli apply all
-    ```
+- **Destroy Specific Environment**
+  ```bash
+   your_command_name destroy_env [eu|us]
+   ```  
 
-7. **Infrastructure Destruction**: To destroy all provisioned infrastructure, use:
+- **Help**
+  ```bash
+   your_command_name help
+   ```
 
-    ```bash
-    quark-cli destroy all
-    ```
-
-8. **Configuration Management**: After infrastructure provisioning, Ansible playbooks can be run to configure software on the provisioned resources:
-
-    ```bash
-    ansible-playbook -i inventory ansible/playbooks/setup-your-service.yml
-    ```
-
-## Key Files and Directories
-
-- `manager.sh`: Main script for managing infrastructure lifecycle.
-- `terraform/`: Directory containing Terraform configurations for provider resources.
-- `ansible/`: Ansible playbooks and roles for software configuration.
-- `.env`: Environment variable file storing AWS credentials and configuration for `manager.sh`.
 
 ## Contributing
 

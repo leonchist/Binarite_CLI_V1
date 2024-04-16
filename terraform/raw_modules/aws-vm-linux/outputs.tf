@@ -6,7 +6,6 @@ output "instance_id" {
 output "vm_public_ips" {
   description = "Public ips of the VM"
   value       = module.aws-vm-linux.vm_public_ips
-
 }
 
 output "vm_private_ips" {

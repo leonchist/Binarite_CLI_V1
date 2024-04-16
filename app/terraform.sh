@@ -1,16 +1,14 @@
 #!/bin/bash
 
+# terraform.sh - Script to manage and orchestrate Terraform operations across various modules.
+# This script provides functions to initialize, apply, and destroy Terraform configurations for predefined modules.
+# It includes functionality to handle individual modules as well as bulk operations across all modules.
+
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
+SCRIPT_DIR=$(dirname "$SCRIPT_DIR")
+
 TERRAFORM_ENV_PATH="$SCRIPT_DIR/terraform/environment"
 MODULES=("network" "quark" "lb" "bots" "agents" "elastic_ips" "forwarder")
-
-# Load .env from script's directory
-if [ -f "$SCRIPT_DIR/.env" ]; then
-    export $(cat "$SCRIPT_DIR/.env" | xargs)
-else
-    echo ".env file not found in $SCRIPT_DIR"
-    exit 1
-fi
 
 get_module_path() {
     module_name="$1"
@@ -28,6 +26,7 @@ is_valid_module() {
     return 1
 }
 
+
 apply_module_and_print_outputs() {
     module_name="$1"
     if ! is_valid_module "$module_name"; then
@@ -40,6 +39,7 @@ apply_module_and_print_outputs() {
     echo "Outputs for $module_name:"
     terraform output
 }
+
 
 terraform_init() {
     module_name="$1"
@@ -95,52 +95,3 @@ destroy_all_modules() {
         destroy_module "${MODULES[idx]}"
     done
 }
-
-run_ansible() {
-    playbook_path="$1"
-    echo "Running Ansible playbook: $playbook_path"
-    ansible-playbook "$playbook_path"
-}
-
-case $1 in
-    init)
-        terraform_init "$2"
-        ;;
-    apply)
-        if [ "$2" == "all" ]; then
-            apply_all_modules
-        else
-            apply_module "$2"
-        fi
-        ;;
-    destroy)
-        if [ "$2" == "all" ]; then
-            destroy_all_modules
-        else
-            destroy_module "$2"
-        fi
-        ;;
-    create)
-        if [ "$2" == "quark" ]; then
-            apply_module_and_print_outputs "network"
-            apply_module_and_print_outputs "quark"
-        else
-            echo "Unrecognized command. Did you mean 'create quark'?"
-        fi
-        ;;
-    help)
-        echo "Usage: $0 COMMAND [MODULE_NAME]"
-        echo ""
-        echo "Commands:"
-        echo "  init [module_name|all]  - Initialize Terraform modules."
-        echo "  apply [module_name|all] - Apply Terraform modules."
-        echo "  destroy [module_name|all] - Destroy Terraform modules."
-        echo "  create quark - Apply 'network' and 'quark' modules and print outputs."
-        echo "  help - Display this help."
-        echo ""
-        echo "Available Modules: ${MODULES[*]}"
-        ;;
-    *)
-        echo "Invalid command. For a list of commands, run: $0 help"
-        ;;
-esac

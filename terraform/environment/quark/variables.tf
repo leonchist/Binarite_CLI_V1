@@ -20,7 +20,12 @@ variable "quark_server_count" {
 variable "public_key" {
   description = "Path to the public key to use"
   type        = string
-  default     = "../../../../gdc-infra.pub"
+  default     = "../../../../gdc-infara.pub"
+}
+
+variable "instance_ip" {
+  type        = string
+  description = "The IP address of the instance to target for destruction."
 }
 
 variable "env" {

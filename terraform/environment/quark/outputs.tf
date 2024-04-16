@@ -29,3 +29,7 @@ output "grafana_prometheus_eu_public_ip" {
 output "grafana_prometheus_eu_instance_id" {
   value = module.grafana-prometheus-eu.instance_id
 }
+
+output "inventory_path" {
+  value = "${path.module}/../../ansible/inventory/hosts.cfg"
+}

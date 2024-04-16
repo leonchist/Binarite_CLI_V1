@@ -1,13 +1,19 @@
 #!/bin/bash
 
-# setup.sh - Script to automate setup tasks for manager.sh and related scripts
+# setup.sh - Script to automate setup tasks for the CLI tool
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
+echo "SETUP: Checking .env in directory: $SCRIPT_DIR"
+
+APP_DIR="$SCRIPT_DIR/app"
+SETUP_DIR="$APP_DIR/setup"
 
 echo "Setting executable permissions on scripts..."
-chmod +x "$SCRIPT_DIR/manager.sh"
-chmod +x "$SCRIPT_DIR/setup.sh"
-chmod +x "$SCRIPT_DIR/uninstall.sh"
+chmod +x "$APP_DIR/cli.sh"
+chmod +x "$APP_DIR/terraform.sh"
+chmod +x "$SETUP_DIR/install.sh"
+chmod +x "$SETUP_DIR/uninstall.sh"
+find "$APP_DIR/methods" -type f -iname "*.sh" -exec chmod +x {} \;
 echo "Permissions set."
 
 if [ -f "$SCRIPT_DIR/.env" ]; then
@@ -23,6 +29,6 @@ if [ -z "$COMMAND_NAME" ]; then
 fi
 
 echo "Running setup script..."
-sudo "$SCRIPT_DIR/install.sh"
+"$SETUP_DIR/install.sh"
 
 echo "Setup complete."
