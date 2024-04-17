@@ -5,7 +5,7 @@ resource "google_compute_network" "vpc" {
 resource "google_compute_subnetwork" "subnet" {
   name          = "${var.basename}-subnet-${var.owner}"
   network       = google_compute_network.vpc.self_link
-  ip_cidr_range = "10.0.1.0/24"
+  ip_cidr_range = var.local_ip_cidr_range
 }
 
 resource "google_compute_router" "router" {
@@ -32,6 +32,18 @@ resource "google_compute_firewall" "allow_ssh" {
   network       = google_compute_network.vpc.self_link
   target_tags   = ["allow-ssh"]
   source_ranges = ["0.0.0.0/0"]
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+}
+
+resource "google_compute_firewall" "allow_ssh_local" {
+  name          = "allow-ssh-local"
+  network       = google_compute_network.vpc.self_link
+  target_tags   = ["allow-ssh-local"]
+  source_ranges = [var.local_ip_cidr_range]
 
   allow {
     protocol = "tcp"

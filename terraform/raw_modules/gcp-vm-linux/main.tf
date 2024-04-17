@@ -6,7 +6,7 @@ resource "google_compute_address" "static_ip" {
 resource "google_compute_instance" "gcp-vm-linux" {
   name         = "${var.basename}-${var.vm_name}-${var.owner}"
   machine_type = var.available_vm_size[var.vm_size]
-  tags         = concat(["allow-ssh"], var.tags)
+  tags         = var.tags
   boot_disk {
     initialize_params {
       image = var.image_name

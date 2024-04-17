@@ -37,6 +37,7 @@ variable "vm_size" {
 
 variable "startup_script" {
   type = string
+  default = null
 }
 
 variable "image_name" {
