@@ -10,7 +10,7 @@ provider "google" {
 }
 
 module "gcp-net" {
-  source = "../../modules/gcp-network"
+  source = "../../terraform/raw_modules/gcp-network"
 }
 
 resource "google_service_account" "default" {
@@ -33,7 +33,7 @@ variable "public_key" {
 
 module "gcp-servers" {
   count                 = 2
-  source                = "../../modules/gcp-vm-linux"
+  source                = "../../terraform/raw_modules/gcp-vm-linux"
   basename              = local.project
   vm_name               = "server-${count.index}"
   owner                 = var.owner
@@ -46,7 +46,7 @@ module "gcp-servers" {
 }
 
 module "gcp-bastion" {
-  source                = "../../modules/gcp-vm-linux"
+  source                = "../../terraform/raw_modules/gcp-vm-linux"
   basename              = local.project
   vm_name               = "bastion"
   owner                 = var.owner
@@ -58,7 +58,7 @@ module "gcp-bastion" {
 }
 
 module "gcp-lb" {
-  source           = "../../modules/gcp-region-lb"
+  source           = "../../terraform/raw_modules/gcp-region-lb"
   owner            = var.owner
   vpc_link         = module.gcp-net.vpc_link
   port_healtcheck  = 80
