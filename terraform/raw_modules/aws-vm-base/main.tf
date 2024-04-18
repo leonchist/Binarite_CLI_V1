@@ -4,9 +4,10 @@ resource "aws_network_interface" "nic" {
   private_ips     = [var.private_ip]
   security_groups = var.vpc_security_group_ids
 
-  tags = merge(var.env.tags, {
-    Name = lower("${var.env.tags.Project}-${var.env.tags.Role}-nic-${var.env.tags.Owner}")
-  })
+  # tags = merge(var.env.tags, {
+  #   Name = lower("${var.env.tags.Project}-${var.env.tags.Role}-nic-${var.env.tags.Owner}")
+  # })
+  tags = var.env.tags
 }
 
 resource "aws_instance" "vm" {
@@ -29,10 +30,9 @@ resource "aws_instance" "vm" {
     device_index         = 0
   }
 
-  tags = merge(var.env.tags, {
-    Name = lower("${var.env.tags.Project}-${var.env.tags.Role}-${var.vm_name}-${var.env.tags.Owner}")
-  })
+  # tags = merge(var.env.tags, {
+  #   Name = lower("${var.env.tags.Project}-${var.env.tags.Role}-${var.vm_name}-${var.env.tags.Owner}")
+  # })
+  tags = var.env.tags
 }
-
-
 

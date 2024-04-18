@@ -1,6 +1,7 @@
 variable "env" {
   type = object({
     tags = object({
+      Name = string
       Source = string
       Env    = string
       Owner = string
@@ -12,6 +13,7 @@ variable "env" {
 
   default = {
     tags = {
+      Name = ""
       Source = ""
       Env = ""
       Owner = ""
