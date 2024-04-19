@@ -15,7 +15,7 @@ module "quark" {
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp-net.subnet_link
   ssh_publickey         = file(var.public_key)
-  vm_size               = "m"
+  vm_size               = "l"
   with_public_ip        = true
   tags                  = ["allow-ssh-local"]
 }
