@@ -1,5 +1,5 @@
 [bastion]
-bastion-host ansible_host=${bastion_ip} remote_user=metagravity
+bastion-host ansible_host=${bastion_ip}
 
 [quark]
 ${quark_ip}
