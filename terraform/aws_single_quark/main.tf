@@ -1,11 +1,3 @@
-# terraform {
-#   backend "s3" {
-#     bucket = "gdc-terraform-infra"
-#     key    = "dev/single_quark.tfstate"
-#     region = "eu-central-1"
-#   }
-# }
-
 resource "aws_key_pair" "ssh_key" {
   public_key = file(var.public_key)
   provider   = aws
@@ -22,10 +14,10 @@ module "quark" {
   aws_secrets            = var.aws_secrets
   startup_script         = "../../scripts/startup.sh"
   eip_allocation_id      = aws_eip.elastic_ip[0].allocation_id
-  private_ip = var.quark_private_ip
+  private_ip             = var.quark_private_ip
 
   env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "quark_server-${random_uuid.uuid[0].result}" })
+    tags = merge(var.env.tags, { Name = "quark_server-${random_uuid.uuid.result}" })
   })
 
   providers = {
@@ -46,7 +38,7 @@ module "grafana-prometheus" {
   startup_script         = "../../scripts/startup.sh"
 
   env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "grafana_server-${random_uuid.uuid[1].result}" })
+    tags = merge(var.env.tags, { Name = "grafana_server-${random_uuid.uuid.result}" })
   })
 
   providers = {
@@ -65,7 +57,7 @@ module "bastion" {
   startup_script         = "../../scripts/startup.sh"
 
   env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "bastion_server-${random_uuid.uuid[2].result}" })
+    tags = merge(var.env.tags, { Name = "bastion_server-${random_uuid.uuid.result}" })
   })
 
   providers = {
@@ -75,11 +67,11 @@ module "bastion" {
 
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/templates/hosts.tpl", {
-    quark_ip = aws_eip.elastic_ip[0].public_ip,
-    grafana_ip = aws_eip.elastic_ip[1].public_ip,
-    bastion_ip = aws_eip.elastic_ip[2].public_ip,
+    quark_ip     = aws_eip.elastic_ip[0].public_ip,
+    grafana_ip   = aws_eip.elastic_ip[1].public_ip,
+    bastion_ip   = aws_eip.elastic_ip[2].public_ip,
     ansible_user = "metagravity",
     private_key  = abspath(var.private_key)
   })
-  filename = "${path.module}/../../ansible/inventory/hosts.cfg"
+  filename = "${path.module}/../../ansible/inventory/${random_uuid.uuid.result}/hosts.cfg"
 }

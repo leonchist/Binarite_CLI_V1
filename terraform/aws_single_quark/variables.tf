@@ -9,7 +9,7 @@ variable "public_key" {
 }
 
 variable "private_key" {
-  type = string
+  type    = string
   default = "../../gdc-infra"
 }
 
@@ -52,21 +52,21 @@ variable "aws_secrets" {
 }
 
 variable "quark_private_ip" {
-  type = string
+  type    = string
   default = "10.0.1.100"
 }
 
 variable "grafana_private_ip" {
-  type = string
+  type    = string
   default = "10.0.1.150"
 }
 
 variable "bastion_private_ip" {
-  type = string
+  type    = string
   default = "10.0.1.200"
 }
 
 variable "services" {
-  type = list(string)
+  type    = list(string)
   default = ["quark_server", "grafana", "bastion"]
 }
