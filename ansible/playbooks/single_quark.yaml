@@ -1,0 +1,4 @@
+- name: Configure Quark servers
+  hosts: quark_servers
+  roles:
+    - quark_server
