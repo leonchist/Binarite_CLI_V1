@@ -1,0 +1,21 @@
+---
+# tasks file for grafana_prometheus
+- name: Copy files from submodule
+  ansible.builtin.copy:
+    src: "{{ role_path }}/files/Grafana-Docker-Deployment/docker-compose"
+    dest: /home/{{ ansible_user }}/grafana-prometheus
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Copy templated prometheus config
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/prometheus.j2"
+    dest: /home/{{ ansible_user }}/grafana-prometheus/docker-compose/prometheus.yml
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: (re)Start grafana and prometheus services
+  community.docker.docker_compose_v2:
+    project_src: /home/{{ ansible_user }}/grafana-prometheus/docker-compose/
