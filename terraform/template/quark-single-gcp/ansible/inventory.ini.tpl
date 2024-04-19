@@ -12,6 +12,7 @@ ansible_ssh_common_args='{{ nodes_ssh_common_args }}'
 
 [grafana:vars]
 ansible_ssh_common_args='{{ nodes_ssh_common_args }}'
+docker_users=["{{ ansible_user }}"]
 
 [all:vars]
 known_host=${known_host}
