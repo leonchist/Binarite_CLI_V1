@@ -6,5 +6,5 @@ After=network.target
 Type=simple
 Restart=always
 RestartSec=3
-ExecStart={{ quark_dir }}/target/release/server --admin-api=0.0.0.0:80 --metrics cloudwatch --cloudwatch-namespace {{ metrics_namespace_prefix }}-{{ inventory_hostname }} --replicate-from=udp://0.0.0.0:5671 {{ replicate_params | join(' ')}}
+ExecStart={{ quark_dir }}/target/release/server --metrics prometheus
 LimitNOFILE=65536
