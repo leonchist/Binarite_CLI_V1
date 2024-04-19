@@ -2,3 +2,11 @@
   hosts: quark_servers
   roles:
     - quark_server
+
+- name: Install Docker and Docker Compose
+  hosts: grafana
+  become: yes
+  roles:
+    - grafana_prometheus
+
+# "{{ groups['quark_servers'] }}"
