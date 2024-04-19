@@ -1,0 +1,9 @@
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+ExecStart={{ bots_dir }}/target/release/clusters {{ hostvars[hostvars[inventory_hostname].stress_target].ansible_host }} "{{ bots_dir }}/clusters/kris40k.json" 1 quark-stress-{{ inventory_hostname }}
+LimitNOFILE=65535
+[Unit]
+Description=Quark random bots server
+After=network.target

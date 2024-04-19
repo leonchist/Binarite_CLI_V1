@@ -1,0 +1,21 @@
+- name: Restart quark server
+  hosts: servers
+  gather_facts: true
+  tasks:
+    - name: Enable and start quark service
+      ansible.builtin.systemd:
+        name: quark
+        state: restarted
+        enabled: true
+      become: true
+
+- name: Restart bots server on all clients
+  hosts: bots
+  gather_facts: true
+  tasks:
+    - name: Enable and start the bots service
+      ansible.builtin.systemd:
+        name: bots
+        state: restarted
+        enabled: true
+      become: true

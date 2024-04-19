@@ -1,0 +1,11 @@
+- name: Run Stress test @ 10Hz / 1k connections per machine
+  hosts: clients
+  roles:
+    - stress_client
+  tasks:
+    - name: Interrupt any running stress tests
+      ansible.builtin.shell: "killall stress"
+      ignore_errors: true
+
+    - name: Run stress test on client hosts
+      ansible.builtin.shell: "nohup {{ quark_dir }}/target/release/charsim -c 1000 -r 10 -f 10 {{ hostvars[hostvars[inventory_hostname].stress_target].ansible_host }} --cloudwatch-namespace=quark-stress-{{ inventory_hostname }} </dev/null >/dev/null 2>&1 &"

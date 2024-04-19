@@ -1,0 +1,12 @@
+- name: Include common role
+  ansible.builtin.include_role:
+    name: common
+
+- name: Include vars
+  ansible.builtin.include_vars: ../vars.yml
+
+- name: Compile Quark server
+  ansible.builtin.include_tasks: build.yml
+
+- name: Configure server systemd service
+  ansible.builtin.include_tasks: service.yml

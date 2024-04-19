@@ -1,0 +1,4 @@
+- name: Compile bots server
+  ansible.builtin.command:
+    chdir: "{{ bots_dir }}"
+    cmd: ~/.cargo/bin/cargo build --release -p clusters

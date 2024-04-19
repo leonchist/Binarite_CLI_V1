@@ -1,0 +1,7 @@
+- name: Stop stress tests on all clients
+  hosts: clients
+  gather_facts: true
+  tasks:
+    - name: Interrupt any running stress tests
+      ansible.builtin.shell: "killall charsim"
+      ignore_errors: true
