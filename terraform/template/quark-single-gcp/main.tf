@@ -55,6 +55,7 @@ resource "local_file" "ansible_inventory" {
     grafana_ip   = module.grafana.private_ips[0]
     ansible_user = var.user
     private_key  = abspath(var.private_key)
+    known_host   = "${var.project}-known-host"
   })
   filename = "${path.module}/../../../env/${var.project}/ansible/inventory/hosts.ini"
 }
