@@ -56,6 +56,12 @@ variable "quark_private_ip" {
   default = "10.0.1.100"
 }
 
+variable "vm_size" {
+  description = "VM sizs, allowed values are s, m, l, xl"
+  type = string
+  default = "s"
+}
+
 variable "grafana_private_ip" {
   type    = string
   default = "10.0.1.150"

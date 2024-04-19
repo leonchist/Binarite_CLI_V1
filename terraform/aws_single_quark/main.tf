@@ -15,6 +15,7 @@ module "quark" {
   startup_script         = "../../scripts/startup.sh"
   eip_allocation_id      = aws_eip.elastic_ip[0].allocation_id
   private_ip             = var.quark_private_ip
+  vm_size = var.vm_size
 
   env = merge(var.env, {
     tags = merge(var.env.tags, { Name = "quark_server-${random_uuid.uuid.result}" })
@@ -33,7 +34,6 @@ module "grafana-prometheus" {
   aws_secrets            = var.aws_secrets
   ssh_key_name           = aws_key_pair.ssh_key.key_name
   provision_uri          = "s3://quark-deployment/prometheus-grafana.tar.gz"
-  vm_size                = "t2.micro"
   private_ip             = var.grafana_private_ip
   startup_script         = "../../scripts/startup.sh"
 
