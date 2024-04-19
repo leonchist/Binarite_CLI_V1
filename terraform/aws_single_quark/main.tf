@@ -26,7 +26,7 @@ module "quark" {
   }
 }
 
-module "grafana-prometheus" {
+module "grafana_prometheus" {
   source                 = "../raw_modules/aws-vm-linux"
   vm_name                = "grafana-prometheus"
   vpc_security_group_ids = [module.aws_net.security_group_id]

@@ -52,10 +52,20 @@ variable "vm_name" {
   default     = "aws_vm"
 }
 
+variable "available_vm_size" {
+  type = map(string)
+  default = {
+    s  = "t3.micro"
+    m  = "c5.large"
+    l  = "c5.4xlarge"
+    xl = "c5.12xlarge"
+  }
+}
+
 variable "vm_size" {
-  description = ""
+  description = "VM sizs, allowed values are s, m, l, xl"
   type        = string
-  default     = "t3.micro"
+  default     = "s"
 }
 
 variable "provision_uri" {

@@ -50,7 +50,7 @@ variable "vm_name" {
 variable "vm_size" {
   description = ""
   type        = string
-  default     = "t3.micro"
+  default     = "s"
 }
 
 variable "provision_uri" {

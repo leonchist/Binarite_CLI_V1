@@ -12,7 +12,7 @@ resource "aws_network_interface" "nic" {
 
 resource "aws_instance" "vm" {
   ami           = var.vm_ami
-  instance_type = var.vm_size
+  instance_type = var.available_vm_size[var.vm_size]
 
   key_name = var.ssh_key_name
 

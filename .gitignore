@@ -113,6 +113,9 @@ terraform/.terraform/
 *.tfstate
 *.tfstate.*
 
+# .tfbackend files
+*.tfbackend.*
+
 # Crash log files
 crash.log
 
