@@ -8,6 +8,10 @@ variable "owner" {
 variable "project" {
 }
 
+variable "user" {
+  default = "metagravity"
+}
+
 variable "public_key" {
   description = "Path to the public key to use"
   type        = string

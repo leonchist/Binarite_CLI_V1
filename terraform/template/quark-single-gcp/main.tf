@@ -18,6 +18,7 @@ module "quark" {
   vm_size               = "l"
   with_public_ip        = true
   tags                  = ["allow-ssh-local"]
+  ssh_username          = var.user
 }
 
 module "grafana" {
@@ -30,6 +31,7 @@ module "grafana" {
   ssh_publickey         = file(var.public_key)
   with_public_ip        = true
   tags                  = ["allow-ssh-local"]
+  ssh_username          = var.user
 }
 
 module "bastion" {
@@ -43,6 +45,7 @@ module "bastion" {
   with_public_ip        = true
   ssh_publickey         = file(var.public_key)
   tags                  = ["allow-ssh"]
+  ssh_username          = var.user
 }
 
 resource "local_file" "ansible_inventory" {
@@ -50,7 +53,7 @@ resource "local_file" "ansible_inventory" {
     bastion_ip   = module.bastion.public_ip
     quark_ip     = module.quark.private_ips[0]
     grafana_ip   = module.grafana.private_ips[0]
-    ansible_user = "metagravity"
+    ansible_user = var.user
     private_key  = abspath(var.private_key)
   })
   filename = "${path.module}/../../../env/${var.project}/ansible/inventory/hosts.ini"
