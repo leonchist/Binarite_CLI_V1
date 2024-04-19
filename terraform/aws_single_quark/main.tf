@@ -15,10 +15,10 @@ module "quark" {
   startup_script         = "../../scripts/startup.sh"
   eip_allocation_id      = aws_eip.elastic_ip[0].allocation_id
   private_ip             = var.quark_private_ip
-  vm_size = var.vm_size
+  vm_size                = var.vm_size
 
   env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "quark_server-${random_uuid.uuid.result}" })
+    tags = merge(var.env.tags, { Name = "quark_server-${var.quark_deployment_id}" })
   })
 
   providers = {
@@ -38,7 +38,7 @@ module "grafana-prometheus" {
   startup_script         = "../../scripts/startup.sh"
 
   env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "grafana_server-${random_uuid.uuid.result}" })
+    tags = merge(var.env.tags, { Name = "grafana_server-${var.quark_deployment_id}" })
   })
 
   providers = {
@@ -57,7 +57,7 @@ module "bastion" {
   startup_script         = "../../scripts/startup.sh"
 
   env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "bastion_server-${random_uuid.uuid.result}" })
+    tags = merge(var.env.tags, { Name = "bastion_server-${var.quark_deployment_id}" })
   })
 
   providers = {
@@ -73,5 +73,5 @@ resource "local_file" "ansible_inventory" {
     ansible_user = "metagravity",
     private_key  = abspath(var.private_key)
   })
-  filename = "${path.module}/../../ansible/inventory/${random_uuid.uuid.result}/hosts.cfg"
+  filename = "${path.module}/../../ansible/inventory/${var.quark_deployment_id}/hosts.cfg"
 }

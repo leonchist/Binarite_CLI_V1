@@ -21,7 +21,3 @@ output "quark_public_ip" {
 output "grafana_public_ip" {
   value = aws_eip.elastic_ip[1].public_ip
 }
-
-output "quark_deployment_id" {
-  value = random_uuid.uuid.result
-}

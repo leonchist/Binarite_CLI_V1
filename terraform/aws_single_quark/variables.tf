@@ -50,17 +50,17 @@ variable "aws_secrets" {
     "access_key" : "2Mm2vm07wuvgwWqeMxxU7j7lPEn+9P9FVRuSKgNf"
   }
 }
+variable "vm_size" {
+  description = "VM sizs, allowed values are s, m, l, xl"
+  type        = string
+  default     = "s"
+}
 
 variable "quark_private_ip" {
   type    = string
   default = "10.0.1.100"
 }
 
-variable "vm_size" {
-  description = "VM sizs, allowed values are s, m, l, xl"
-  type = string
-  default = "s"
-}
 
 variable "grafana_private_ip" {
   type    = string
@@ -75,4 +75,9 @@ variable "bastion_private_ip" {
 variable "services" {
   type    = list(string)
   default = ["quark_server", "grafana", "bastion"]
+}
+
+variable "quark_deployment_id" {
+  type    = string
+  default = "912334ee-bbaa-46dc-8f84-9cc01e4bab3b"
 }

@@ -1,7 +1,7 @@
 resource "aws_eip" "elastic_ip" {
   count  = 3
   domain = "vpc"
-  tags   = merge(var.env.tags, { Name = "${var.services[count.index]}_eip-${random_uuid.uuid.result}" })
+  tags   = merge(var.env.tags, { Name = "${var.services[count.index]}_eip-${var.quark_deployment_id}" })
 }
 
 resource "aws_eip_association" "eip_assoc_quark" {
