@@ -9,6 +9,12 @@
     state: present
   become: true
 
+- name: Install git
+  ansible.builtin.apt:
+    name: git
+    state: present
+  become: true
+
 - name: Install capnproto
   ansible.builtin.apt:
     name: capnproto
