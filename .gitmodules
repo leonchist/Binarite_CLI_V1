@@ -1,0 +1,3 @@
+[submodule "ansible/roles/grafana_prometheus/files/Grafana-Docker-Deployment"]
+	path = ansible/roles/grafana_prometheus/files/Grafana-Docker-Deployment
+	url = git@github.com:MetaGravity/Grafana-Docker-Deployment.git
