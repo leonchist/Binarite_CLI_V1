@@ -5,6 +5,9 @@ resource "google_service_account" "default" {
 
 module "gcp-net" {
   source = "../../../terraform/raw_modules/gcp-network"
+  local_ip_cidr_range = var.subnet_local_ip_range
+}
+
 }
 
 module "quark" {
