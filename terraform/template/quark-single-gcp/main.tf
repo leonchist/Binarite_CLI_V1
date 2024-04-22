@@ -4,7 +4,7 @@ resource "google_service_account" "default" {
 }
 
 module "gcp-net" {
-  source = "../../../terraform/raw_modules/gcp-network"
+  source              = "../../../terraform/raw_modules/gcp-network"
   local_ip_cidr_range = var.subnet_local_ip_range
 }
 
@@ -35,9 +35,9 @@ resource "google_compute_firewall" "allow_quark_metrics" {
 
 module "quark" {
   source                = "../../../terraform/raw_modules/gcp-vm-linux"
-  basename              = var.project
+  basename              = var.metadata.Project
   vm_name               = "quark"
-  owner                 = var.owner
+  owner                 = var.metadata.Owner
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp-net.subnet_link
   ssh_publickey         = file(var.public_key)
@@ -45,6 +45,7 @@ module "quark" {
   with_public_ip        = true
   tags                  = ["allow-ssh-local", "allow-quark", "allow-quark-metrics"]
   ssh_username          = var.user
+  metadata              = var.metadata
 }
 
 
@@ -62,22 +63,23 @@ resource "google_compute_firewall" "allow_grafana" {
 
 module "grafana" {
   source                = "../../../terraform/raw_modules/gcp-vm-linux"
-  basename              = var.project
+  basename              = var.metadata.Project
   vm_name               = "grafana"
-  owner                 = var.owner
+  owner                 = var.metadata.Owner
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp-net.subnet_link
   ssh_publickey         = file(var.public_key)
   with_public_ip        = true
   tags                  = ["allow-ssh-local", "allow-grafana"]
   ssh_username          = var.user
+  metadata              = var.metadata
 }
 
 module "bastion" {
   source                = "../../../terraform/raw_modules/gcp-vm-linux"
-  basename              = var.project
+  basename              = var.metadata.Owner
   vm_name               = "bastion"
-  owner                 = var.owner
+  owner                 = var.metadata.Owner
   startup_script        = null
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp-net.subnet_link
@@ -85,6 +87,7 @@ module "bastion" {
   ssh_publickey         = file(var.public_key)
   tags                  = ["allow-ssh"]
   ssh_username          = var.user
+  metadata              = var.metadata
 }
 
 resource "local_file" "ansible_inventory" {
@@ -94,7 +97,7 @@ resource "local_file" "ansible_inventory" {
     grafana_ip   = module.grafana.private_ips[0]
     ansible_user = var.user
     private_key  = abspath(var.private_key)
-    known_host   = "${var.project}-known-host"
+    known_host   = "${var.metadata.Project}-known-host"
   })
-  filename = "${path.module}/../../../env/${var.project}/ansible/inventory/hosts.ini"
+  filename = var.ansible_inventory_path
 }
