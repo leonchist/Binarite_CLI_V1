@@ -1,0 +1,6 @@
+- name: Include common role
+  ansible.builtin.include_role:
+    name: common
+
+- name: Compile Quark stress client
+  ansible.builtin.include_tasks: build.yml

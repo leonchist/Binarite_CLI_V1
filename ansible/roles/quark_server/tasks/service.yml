@@ -1,0 +1,32 @@
+- name: Get IP addresses of all hosts
+  ansible.builtin.set_fact:
+    all_host_ips: "{{ ansible_play_hosts | map('extract', hostvars, ['ansible_default_ipv4', 'address']) | list }}"
+
+- name: Remove current host IP from the list
+  ansible.builtin.set_fact:
+    all_host_ips: "{{ all_host_ips | difference([hostvars[inventory_hostname].ansible_default_ipv4.address]) }}"
+
+- name: Prepend string to each IP
+  ansible.builtin.set_fact:
+    replicate_params: "{{ all_host_ips | map('regex_replace', '^(.*)$', '--replicate-to=udp://\\1') | list }}"
+
+- name: Create systemd service file
+  ansible.builtin.template:
+    src: ../templates/quark.service.j2
+    dest: /etc/systemd/system/quark.service
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+
+- name: Enable and start the service
+  ansible.builtin.systemd:
+    name: quark
+    state: restarted
+    enabled: true
+  become: true

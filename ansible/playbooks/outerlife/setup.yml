@@ -1,0 +1,9 @@
+- name: Configure servers
+  hosts: servers
+  roles:
+    - quark_server
+
+- name: Configure bot servers
+  hosts: bots
+  roles:
+    - bot_server

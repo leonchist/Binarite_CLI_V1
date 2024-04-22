@@ -1,0 +1,4 @@
+- name: Compile Quark Stress client
+  ansible.builtin.command:
+    chdir: "{{ quark_dir }}"
+    cmd: ~/.cargo/bin/cargo build --release -p charsim

@@ -1,0 +1,9 @@
+- name: Configure servers
+  hosts: servers
+  roles:
+    - quark_server
+
+- name: Configure stress clients
+  hosts: clients
+  roles:
+    - stress_client

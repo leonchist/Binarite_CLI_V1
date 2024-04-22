@@ -1,0 +1,10 @@
+- name: Stop Quark service
+  hosts: servers
+  gather_facts: true
+  tasks:
+    - name: Stop quark service
+      ansible.builtin.systemd:
+        name: quark
+        state: stopped
+        enabled: true
+      become: true

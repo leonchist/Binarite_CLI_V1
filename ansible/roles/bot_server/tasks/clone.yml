@@ -1,0 +1,24 @@
+- name: Delete existing bots directory
+  become: true
+  file:
+    path: "{{ bots_dir }}"
+    state: absent
+
+- name: Ensure bots directory exists
+  file:
+    path: "{{ bots_dir }}"
+    state: directory
+
+- name: Ensure bots directory has correct permissions
+  ansible.builtin.file:
+    path: "{{ bots_dir }}"
+    mode: "0777"
+    recurse: true
+
+- name: Clone Git repository
+  ansible.builtin.git:
+    repo: "{{ bots_git_repo_url }}"
+    version: "{{ bots_git_branch }}"
+    dest: "{{ bots_dir }}"
+    single_branch: true
+    force: true

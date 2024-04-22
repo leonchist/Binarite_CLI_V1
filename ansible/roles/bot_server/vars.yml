@@ -1,0 +1,4 @@
+bots_dir: /home/{{ ansible_user }}/bots
+# Read only access to this repository, expires in 30 days, owned by Metagravity org
+bots_git_repo_url: "https://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@github.com/MetaGravity/Quark-Bots.git"
+bots_git_branch: karim/object-ownership

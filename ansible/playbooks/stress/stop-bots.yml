@@ -1,0 +1,10 @@
+- name: Stop OL bots services
+  hosts: clients
+  gather_facts: true
+  tasks:
+    - name: Stop the bots service
+      ansible.builtin.systemd:
+        name: bots
+        state: stopped
+        enabled: true
+      become: true

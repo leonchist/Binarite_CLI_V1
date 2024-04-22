@@ -1,0 +1,7 @@
+- name: Remove Quark
+  hosts: all
+  tasks:
+    - name: Delete Quark directory
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}/quark"
+        state: absent

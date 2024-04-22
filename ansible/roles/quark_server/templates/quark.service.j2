@@ -1,0 +1,10 @@
+[Unit]
+Description=Quark Server
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=3
+ExecStart={{ quark_dir }}/target/release/server --metrics prometheus
+LimitNOFILE=65536
