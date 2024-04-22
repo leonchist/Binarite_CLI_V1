@@ -70,7 +70,7 @@ resource "local_file" "ansible_inventory" {
     quark_ip     = aws_eip.elastic_ip[0].public_ip,
     grafana_ip   = aws_eip.elastic_ip[1].public_ip,
     bastion_ip   = aws_eip.elastic_ip[2].public_ip,
-    ansible_user = "metagravity",
+    ansible_user = "ec2-user",
     private_key  = abspath(var.private_key)
   })
   filename = "${path.module}/../../ansible/inventory/${var.quark_deployment_id}/hosts.cfg"
