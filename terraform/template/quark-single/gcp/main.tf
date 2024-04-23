@@ -4,7 +4,7 @@ resource "google_service_account" "default" {
 }
 
 module "gcp-net" {
-  source              = "../../../terraform/raw_modules/gcp-network"
+  source              = "../../../../terraform/raw_modules/gcp-network"
   local_ip_cidr_range = var.subnet_local_ip_range
 }
 
@@ -34,7 +34,7 @@ resource "google_compute_firewall" "allow_quark_metrics" {
 }
 
 module "quark" {
-  source                = "../../../terraform/raw_modules/gcp-vm-linux"
+  source                = "../../../../terraform/raw_modules/gcp-vm-linux"
   basename              = var.metadata.Project
   vm_name               = "quark"
   owner                 = var.metadata.Owner
@@ -62,7 +62,7 @@ resource "google_compute_firewall" "allow_grafana" {
 }
 
 module "grafana" {
-  source                = "../../../terraform/raw_modules/gcp-vm-linux"
+  source                = "../../../../terraform/raw_modules/gcp-vm-linux"
   basename              = var.metadata.Project
   vm_name               = "grafana"
   owner                 = var.metadata.Owner
@@ -76,7 +76,7 @@ module "grafana" {
 }
 
 module "bastion" {
-  source                = "../../../terraform/raw_modules/gcp-vm-linux"
+  source                = "../../../../terraform/raw_modules/gcp-vm-linux"
   basename              = var.metadata.Owner
   vm_name               = "bastion"
   owner                 = var.metadata.Owner
@@ -91,13 +91,13 @@ module "bastion" {
 }
 
 resource "local_file" "ansible_inventory" {
-  content = templatefile("${path.module}/ansible/inventory.ini.tpl", {
+  content = templatefile("${path.module}/../common/ansible/inventory.ini.tpl", {
     bastion_ip   = module.bastion.public_ip
     quark_ip     = module.quark.private_ips[0]
     grafana_ip   = module.grafana.private_ips[0]
     ansible_user = var.user
     private_key  = abspath(var.private_key)
-    known_host   = "${var.metadata.Project}-known-host"
+    known_host   = "${var.known_host_path}"
   })
   filename = var.ansible_inventory_path
 }
