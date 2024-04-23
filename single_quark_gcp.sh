@@ -19,7 +19,21 @@ export TF_VAR_public_key="$app_dir/gdc-infra.pub"
 export TF_VAR_private_key="$app_dir/gdc-infra"
 export TF_VAR_subnet_local_ip_range="10.0.10.0/24"
 
-export TF_VAR_metadata="{\"Owner\": \"$owner\", \"Project\": \"$project\", \"Uuid\": \"${uuid}\", \"Env\" : \"Dev\", \"Role\" = \"Cluster\"}"
+# Generate JSON using jq
+json=$(jq -n \
+  --arg owner "$owner" \
+  --arg project "$project" \
+  --arg uuid "$uuid" \
+  '{
+    Owner: $owner,
+    Project: $project,
+    Uuid: $uuid,
+    Env: "Dev",
+    Role: "Cluster",
+  }')
+
+export TF_VAR_metadata=$json
+echo $TF_VAR_metadata
 
 export TF_VAR_ansible_inventory_path="$root_dir/ansible/inventory/hosts.ini"
 export TF_VAR_known_host_path=$root_dir/known_hosts
