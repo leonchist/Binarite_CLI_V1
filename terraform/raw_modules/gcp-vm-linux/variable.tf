@@ -24,7 +24,7 @@ variable "vm_name" {
 }
 
 variable "vm_size" {
-  description = "VM sizs, allowed values are s, m, l, xl"
+  description = "VM size, allowed values are s, m, l, xl"
   type        = string
   default     = "s"
 }
