@@ -18,20 +18,28 @@ output "grafana_instance_id" {
   value = module.grafana_prometheus.instance_id
 }
 
-output "bastion" {
+output "bastion_instance_id" {
   value = module.bastion.instance_id
 }
 
 output "quark_public_ip" {
-  value = aws_eip.elastic_ip[0].public_ip
+  value = module.quark.vm_public_ips
+}
+
+output "quark_private_ip" {
+  value = module.quark.vm_private_ips
 }
 
 output "grafana_public_ip" {
-  value = aws_eip.elastic_ip[1].public_ip
+  value = module.grafana_prometheus.vm_public_ips
+}
+
+output "grafana_private_ip" {
+  value = module.grafana_prometheus.vm_private_ips
 }
 
 output "bastion_public_ip" {
-  value = aws_eip.elastic_ip[2].public_ip
+  value = module.bastion.vm_public_ips
 }
 
 output "elastic_ip_ids" {

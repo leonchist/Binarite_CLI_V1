@@ -1,5 +1,5 @@
 module "aws_net" {
-  source = "../raw_modules/aws-network"
+  source = "../../../raw_modules/aws-network"
   env = merge(var.env, {
     tags = merge(var.env.tags, { Name = "demo_vpc" })
   })

@@ -5,12 +5,12 @@ variable "server_region" {
 
 variable "public_key" {
   type    = string
-  default = "../../gdc-infra.pub"
+  default = "../../../../gdc-infra.pub"
 }
 
 variable "private_key" {
   type    = string
-  default = "../../gdc-infra"
+  default = "../../../../gdc-infra"
 }
 
 variable "env" {
@@ -34,22 +34,11 @@ variable "env" {
       Owner   = "Simon"
       App     = "Quark server"
       Project = "Platform"
-      Role    = "Quark Demo"
+      Role    = "Cluster"
     }
   }
 }
 
-variable "aws_secrets" {
-  type = object({
-    key_id     = string
-    access_key = string
-  })
-
-  default = {
-    "key_id" : "AKIAZRGHW6ZMDXGHIUPW",
-    "access_key" : "2Mm2vm07wuvgwWqeMxxU7j7lPEn+9P9FVRuSKgNf"
-  }
-}
 variable "vm_size" {
   description = "VM sizs, allowed values are s, m, l, xl"
   type        = string
@@ -72,6 +61,11 @@ variable "bastion_private_ip" {
   default = "10.0.1.200"
 }
 
+variable "vm_module" {
+  type    = string
+  default = "../../../raw_modules/aws-vm-linux"
+}
+
 variable "services" {
   type    = list(string)
   default = ["quark_server", "grafana", "bastion"]
@@ -83,6 +77,6 @@ variable "quark_deployment_id" {
 }
 
 variable "user" {
-  type = string
+  type    = string
   default = "ubuntu"
 }

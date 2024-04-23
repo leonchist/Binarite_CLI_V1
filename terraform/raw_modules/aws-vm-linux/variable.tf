@@ -86,6 +86,7 @@ variable "ami_name" {
 
 variable "startup_script" {
   type = string
+  default = null
 }
 
 variable "eip_allocation_id" {

@@ -88,6 +88,7 @@ variable "aws_secrets" {
 }
 variable "vm_user_data" {
   type = string
+  default = null
 }
 
 variable "vm_disk_size" {
