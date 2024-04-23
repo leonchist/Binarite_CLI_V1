@@ -25,7 +25,7 @@ export TF_VAR_ansible_inventory_path="$root_dir/ansible/inventory/hosts.ini"
 export TF_VAR_known_host_path=$root_dir/known_hosts
 
 tf_state=$root_dir/state/terraform.tfstate
-tf_conf="$app_dir/terraform/template/quark-single-gcp"
+tf_conf="$app_dir/terraform/template/quark-single/gcp"
 
 if [ "$1" ]; then
     terraform -chdir="$tf_conf" destroy -input=false -auto-approve
