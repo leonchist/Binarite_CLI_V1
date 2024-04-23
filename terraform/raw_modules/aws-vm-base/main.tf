@@ -16,7 +16,7 @@ resource "aws_instance" "vm" {
 
   key_name = var.ssh_key_name
 
-  user_data                   = var.vm_user_data
+  # user_data                   = var.vm_user_data
   user_data_replace_on_change = true
 
   get_password_data = var.vm_get_password

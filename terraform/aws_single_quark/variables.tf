@@ -81,3 +81,8 @@ variable "quark_deployment_id" {
   type    = string
   default = "912334ee-bbaa-46dc-8f84-9cc01e4bab3b"
 }
+
+variable "user" {
+  type = string
+  default = "ubuntu"
+}

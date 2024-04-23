@@ -15,7 +15,7 @@ module "quark" {
   startup_script         = "../../scripts/startup.sh"
   eip_allocation_id      = aws_eip.elastic_ip[0].allocation_id
   private_ip             = var.quark_private_ip
-  vm_size                = var.vm_size
+  vm_size                = "l"
 
   env = merge(var.env, {
     tags = merge(var.env.tags, { Name = "quark_server-${var.quark_deployment_id}" })
@@ -67,11 +67,12 @@ module "bastion" {
 
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/templates/hosts.tpl", {
-    quark_ip     = aws_eip.elastic_ip[0].public_ip,
-    grafana_ip   = aws_eip.elastic_ip[1].public_ip,
+    quark_ip     = var.quark_private_ip,
+    grafana_ip   = var.grafana_private_ip,
     bastion_ip   = aws_eip.elastic_ip[2].public_ip,
-    ansible_user = "ec2-user",
+    ansible_user = var.user,
     private_key  = abspath(var.private_key)
+    known_host   = "${var.quark_deployment_id}-known-host"
   })
   filename = "${path.module}/../../ansible/inventory/${var.quark_deployment_id}/hosts.cfg"
 }
