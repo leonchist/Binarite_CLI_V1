@@ -1,5 +1,24 @@
 ---
 # tasks file for grafana_prometheus
+
+# https://github.com/geerlingguy/ansible-role-pip/issues/49#issuecomment-1849023975
+- name: Populate Apt's Cache with package definitions to avoid "no such package" errors
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+
+- name: include geerlingguy.pip role
+  ansible.builtin.import_role:
+    name: geerlingguy.pip
+  vars:
+    pip_install_packages:
+        - name: docker
+        - name: docker-compose
+
+- name: include geerlingguy.docker role
+  ansible.builtin.import_role:
+    name: geerlingguy.docker
+
 - name: Copy files from submodule
   ansible.builtin.copy:
     src: "{{ role_path }}/files/Grafana-Docker-Deployment/docker-compose"
