@@ -11,7 +11,6 @@ module "quark" {
   subnet_id              = module.aws_net.subnet_id
   vm_name                = "quark"
   ssh_key_name           = aws_key_pair.ssh_key.key_name
-  eip_allocation_id      = aws_eip.elastic_ip[0].allocation_id
   private_ip             = var.quark_private_ip
   vm_size                = "l"
   env = merge(var.env, {
@@ -29,7 +28,6 @@ module "grafana_prometheus" {
   vpc_security_group_ids = [module.aws_net.security_group_id]
   subnet_id              = module.aws_net.subnet_id
   ssh_key_name           = aws_key_pair.ssh_key.key_name
-  provision_uri          = "s3://quark-deployment/prometheus-grafana.tar.gz"
   private_ip             = var.grafana_private_ip
 
   env = merge(var.env, {
@@ -62,10 +60,10 @@ resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/../common/ansible/inventory.ini.tpl", {
     quark_ip     = module.quark.vm_private_ips[0]
     grafana_ip   = module.grafana_prometheus.vm_private_ips[0],
-    bastion_ip   = aws_eip.elastic_ip[2].public_ip,
+    bastion_ip   = module.bastion.vm_public_ips[0],
     ansible_user = var.user,
     private_key  = abspath(var.private_key)
-    known_host   = "${var.quark_deployment_id}-known-host"
+    known_host   = var.known_host_path
   })
-  filename = "${path.module}/../../../../ansible/inventory/${var.quark_deployment_id}/hosts.cfg"
+  filename = var.ansible_inventory_path
 }

@@ -135,3 +135,6 @@ override.tf.json
 .terraform
 terraform.rc
 .kubeconfig
+
+#ansible configuration file
+.cfg

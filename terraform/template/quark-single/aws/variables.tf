@@ -40,7 +40,7 @@ variable "env" {
 }
 
 variable "vm_size" {
-  description = "VM sizs, allowed values are s, m, l, xl"
+  description = "VM sizes, allowed values are s, m, l, xl"
   type        = string
   default     = "s"
 }
@@ -79,4 +79,13 @@ variable "quark_deployment_id" {
 variable "user" {
   type    = string
   default = "ubuntu"
+}
+
+variable "ansible_inventory_path" {
+  type = string
+}
+
+variable "known_host_path" {
+  type = string
+  default = "/etc/ansible/912334ee-bbaa-46dc-8f84-9cc01e4bab3b-known-host"
 }
