@@ -35,7 +35,7 @@ variable "startup_script" {
 }
 
 variable "image_name" {
-  default = "debian-cloud/debian-11"
+  default = "ubuntu-os-cloud/ubuntu-2204-lts"
 }
 
 variable "available_vm_size" {
