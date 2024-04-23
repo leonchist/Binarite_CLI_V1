@@ -2,12 +2,6 @@ variable "gcp_project" {
   default = "platform-419411"
 }
 
-variable "owner" {
-}
-
-variable "project" {
-}
-
 variable "user" {
   default = "metagravity"
 }
@@ -24,4 +18,28 @@ variable "private_key" {
 
 variable "subnet_local_ip_range" {
   default = "10.0.1.0/24"
+}
+
+variable "ansible_inventory_path" {
+}
+
+variable "known_host_path" {
+}
+
+variable "metadata" {
+  type = object({
+    Env     = string
+    Role    = string
+    Owner   = string
+    Project = string
+    Uuid    = string
+  })
+
+  default = {
+    Env     = "Dev"
+    Role    = "Cluster"
+    Owner   = null
+    Project = null
+    Uuid    = null
+  }
 }

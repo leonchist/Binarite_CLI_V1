@@ -1,17 +1,11 @@
-variable "env" {
+variable "metadata" {
   type = object({
-    tags = object({
-      env    = string
-      source = string
-    })
+    Env = string
+    Role = string
+    Owner = string
+    Project = string
+    Uuid = string
   })
-
-  default = {
-    tags = {
-      env    = "dev"
-      source = "terraform"
-    }
-  }
 }
 
 variable "basename" {

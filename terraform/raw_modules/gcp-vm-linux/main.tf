@@ -1,3 +1,11 @@
+locals {
+  metadata = {
+    for key, value in var.metadata :
+      lower(key) => lower(value)
+  }
+}
+
+
 resource "google_compute_address" "static_ip" {
   count = var.with_public_ip ? 1 : 0
   name  = "${var.basename}-${var.vm_name}-ip-${var.owner}"
@@ -22,7 +30,7 @@ resource "google_compute_instance" "gcp-vm-linux" {
     }
 
   }
-  labels = merge(var.env.tags, { name = "${var.vm_name}" })
+  labels = merge(local.metadata, { name = "${var.vm_name}" })
   metadata = {
     ssh-keys = "${var.ssh_username}:${var.ssh_publickey}"
   }

@@ -26,7 +26,10 @@ You can set CLI command name by setting `COMMAND_NAME` variable in `.env` file.
 ## Installation
 
 To install the CLI tool, follow these steps:
-0. **Install Dependencies**: Ensure you have Terraform and Ansible installed on your system. This project was tested with Terraform v0.14.7 and Ansible 2.9.10, but newer versions should also be compatible.
+
+0. **Install Dependencies**: 
+   1. Ensure you have Terraform and Ansible installed on your system. This project was tested with Terraform v0.14.7 and Ansible 2.9.10, but newer versions should also be compatible.
+   2. Install the ansible requirements : `ansible-galaxy install -r requirements.yml`
 
 1. **Clone the Repository**
    ```bash
