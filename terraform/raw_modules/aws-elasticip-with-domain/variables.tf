@@ -9,23 +9,23 @@ variable "subdomain" {
 variable "env" {
   type = object({
     tags = object({
-      Source = string
-      Env    = string
-      Owner = string
-      App = string
+      Source  = string
+      Env     = string
+      Owner   = string
+      App     = string
       Project = string
-      Role = string
+      Role    = string
     })
   })
 
   default = {
     tags = {
-      Source = ""
-      Env = ""
-      Owner = ""
-      App = ""
+      Source  = ""
+      Env     = ""
+      Owner   = ""
+      App     = ""
       Project = ""
-      Role = ""
+      Role    = ""
     }
   }
 }

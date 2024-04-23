@@ -1,25 +1,27 @@
 variable "env" {
   type = object({
     tags = object({
-      Name = string
-      Source = string
-      Env    = string
-      Owner = string
-      App = string
+      Name    = string
+      Source  = string
+      Env     = string
+      Owner   = string
+      App     = string
       Project = string
-      Role = string
+      Role    = string
+      UUID    = string
     })
   })
 
   default = {
     tags = {
-      Name = ""
-      Source = ""
-      Env = ""
-      Owner = ""
-      App = ""
+      Name    = ""
+      Source  = ""
+      Env     = ""
+      Owner   = ""
+      App     = ""
       Project = ""
-      Role = ""
+      Role    = ""
+      UUID    = ""
     }
   }
 }
@@ -85,7 +87,7 @@ variable "ami_name" {
 }
 
 variable "startup_script" {
-  type = string
+  type    = string
   default = null
 }
 

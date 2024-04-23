@@ -14,7 +14,7 @@ module "quark" {
   private_ip             = var.quark_private_ip
   vm_size                = "l"
   env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "quark_server-${var.quark_deployment_id}" })
+    tags = merge(var.env.tags, { Name = "Platform-quark_server-Simon", UUID = var.quark_deployment_id })
   })
 
   providers = {
@@ -31,7 +31,7 @@ module "grafana_prometheus" {
   private_ip             = var.grafana_private_ip
 
   env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "grafana_server-${var.quark_deployment_id}" })
+    tags = merge(var.env.tags, { Name = "Platform-grafana_server-Simon", UUID = var.quark_deployment_id })
   })
 
   providers = {
@@ -48,7 +48,7 @@ module "bastion" {
   private_ip             = var.bastion_private_ip
 
   env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "bastion_server-${var.quark_deployment_id}" })
+    tags = merge(var.env.tags, { Name = "Platform-bastion_server-Simon", UUID = var.quark_deployment_id })
   })
 
   providers = {

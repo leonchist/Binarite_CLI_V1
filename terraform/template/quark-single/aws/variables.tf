@@ -23,6 +23,7 @@ variable "env" {
       App     = string
       Project = string
       Role    = string
+      UUID    = string
     })
   })
 
@@ -35,6 +36,7 @@ variable "env" {
       App     = "Quark server"
       Project = "Platform"
       Role    = "Cluster"
+      UUID    = ""
     }
   }
 }
@@ -86,6 +88,6 @@ variable "ansible_inventory_path" {
 }
 
 variable "known_host_path" {
-  type = string
+  type    = string
   default = "/etc/ansible/912334ee-bbaa-46dc-8f84-9cc01e4bab3b-known-host"
 }

@@ -3,7 +3,7 @@ resource "aws_network_interface" "nic" {
   subnet_id       = var.subnet_id
   private_ips     = [var.private_ip]
   security_groups = var.vpc_security_group_ids
-  tags = var.env.tags
+  tags            = var.env.tags
 }
 
 resource "aws_instance" "vm" {
@@ -15,7 +15,7 @@ resource "aws_instance" "vm" {
   user_data_replace_on_change = true
 
   get_password_data = var.vm_get_password
-  
+
   user_data = var.vm_user_data
 
   root_block_device {
