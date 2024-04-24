@@ -74,3 +74,4 @@ done
 ansible-playbook -i $TF_VAR_ansible_inventory_path ./ansible/playbooks/single_quark.yaml
 
 echo "new cluster uuid : $uuid"
+terraform -chdir="$tf_conf" output
