@@ -8,10 +8,11 @@ git_repository=""
 git_branch=""
 provider="gcp"
 region="europe-west1"
+uuid=""
 
 # Usage function for displaying help
 usage() {
-    echo "Usage: $0 server [-size instance_size] [-count instance_count] [-repo git_repository] [-branch git_branch] [-cloud_provider provider] [-cloud_region region]"
+    echo "Usage: $0 server [-size instance_size] [-count instance_count] [-repo git_repository] [-branch git_branch] [-provider provider] [-region region]"
     exit 1
 }
 
@@ -19,6 +20,8 @@ usage() {
 set_param() {
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
+            -destroy)
+                uuid="$2"; shift 2;;
             -size)
                 instance_size="$2"; shift 2;;
             -count)
@@ -27,9 +30,9 @@ set_param() {
                 git_repository="$2"; shift 2;;
             -branch)
                 git_branch="$2"; shift 2;;
-            -cloud_provider)
+            -provider)
                 provider="$2"; shift 2;;
-            -cloud_region)
+            -region)
                 region="$2"; shift 2;;
             -*)
                 echo "Error: Invalid option '$1'"
@@ -76,7 +79,10 @@ apply_server_module() {
     export TF_VAR_git_branch="$git_branch"
     export TF_VAR_server_region="$region"
 
-    uuid=$(uuid)
+    if [[ -z "$uuid" ]]; then
+        creation_mode=true
+        uuid=$(uuid)
+    fi
     work_dir="$HOME/.mg/$uuid"
 
     # Generate JSON using jq
@@ -103,27 +109,16 @@ apply_server_module() {
     export TF_VAR_public_key="$ROOT_DIR/gdc-infra.pub" # TODO generate from terrafotm
     export TF_VAR_private_key="$ROOT_DIR/gdc-infra" # TODO generate from terrafotm
 
+    export ANSIBLE_CONFIG=$ROOT_DIR/ansible.cfg
+
     echo "Debug : Using tf configuration from : $tf_conf"
     echo "Debug : Setting tf state to : $tf_state"
 
-    terraform -chdir="$tf_conf" init -input=false -backend-config="path=$tf_state"
-    terraform -chdir="$tf_conf" plan -input=false
-    terraform -chdir="$tf_conf" apply -input=false -auto-approve
-
-    export ANSIBLE_CONFIG=$ROOT_DIR/ansible.cfg
-
-    ansible all -m ping -i $TF_VAR_ansible_inventory_path
-
-    while [ $? -ne 0 ]; do
-    echo "waiting for nodes to come online"
-    sleep 10
-    ansible all -m ping -i $TF_VAR_ansible_inventory_path
-    done
-
-    ansible-playbook -i $TF_VAR_ansible_inventory_path ./ansible/playbooks/single_quark.yaml
-
-    echo "new cluster uuid : $uuid"
-    terraform -chdir="$tf_conf" output
+    if [[ $creation_mode = true ]]; then
+        create_server
+    else
+        destroy_server
+    fi
 
     # # Assuming 'server' is a valid module within your Terraform setup
     # if is_valid_module "server"; then
@@ -137,3 +132,25 @@ apply_server_module() {
     # fi
 }
 
+create_server() {
+    terraform -chdir="$tf_conf" init -input=false -backend-config="path=$tf_state"
+    terraform -chdir="$tf_conf" plan -input=false
+    terraform -chdir="$tf_conf" apply -input=false -auto-approve
+
+    ansible all -m ping -i $TF_VAR_ansible_inventory_path
+
+    while [[ $? -ne 0 ]]; do
+        echo "waiting for nodes to come online"
+        sleep 10
+        ansible all -m ping -i $TF_VAR_ansible_inventory_path
+    done
+
+    ansible-playbook -i $TF_VAR_ansible_inventory_path ./ansible/playbooks/single_quark.yaml
+
+    echo "new cluster uuid : $uuid"
+    terraform -chdir="$tf_conf" output
+}
+
+destroy_server() {
+    terraform -chdir="$tf_conf" destroy -input=false -auto-approve
+}
