@@ -13,12 +13,12 @@ locals {
 module "gcp_net" {
   source              = "../../../../terraform/raw_modules/gcp-network"
   local_ip_cidr_range = var.subnet_local_ip_range
-  basename = var.metadata.Project
-  owner = var.metadata.Owner
+  basename            = var.metadata.Project
+  owner               = var.metadata.Owner
 }
 
 locals {
-  allow_quark_fw_tag = "${var.metadata.Project}-quark-fw-${var.metadata.Owner}"
+  allow_quark_fw_tag         = "${var.metadata.Project}-quark-fw-${var.metadata.Owner}"
   allow_quark_metrics_fw_tag = "${var.metadata.Project}-quark-metrics-fw-${var.metadata.Owner}"
 }
 
@@ -60,7 +60,7 @@ module "quark" {
   tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_quark_fw_tag, local.allow_quark_metrics_fw_tag]
   ssh_username          = var.user
   metadata              = var.metadata
-  zone = local.gcp_zone
+  zone                  = local.gcp_zone
 }
 
 locals {
@@ -92,7 +92,7 @@ module "grafana" {
   tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_grafana_fw_tag]
   ssh_username          = var.user
   metadata              = var.metadata
-  zone = local.gcp_zone
+  zone                  = local.gcp_zone
 }
 
 module "bastion" {
@@ -108,7 +108,7 @@ module "bastion" {
   tags                  = [module.gcp_net.allow_ssh_fw_tag]
   ssh_username          = var.user
   metadata              = var.metadata
-  zone = local.gcp_zone
+  zone                  = local.gcp_zone
 }
 
 resource "local_file" "ansible_inventory" {
