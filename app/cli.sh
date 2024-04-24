@@ -5,6 +5,7 @@
 # It handles environment variable loading, method script sourcing, and command execution.
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
+ROOT_DIR=$(realpath $SCRIPT_DIR/..)
 
 if [ -f "$SCRIPT_DIR/../.env" ]; then
     export $(cat "$SCRIPT_DIR/../.env" | xargs)
