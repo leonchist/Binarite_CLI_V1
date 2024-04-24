@@ -3,14 +3,6 @@
   roles:
     - quark_server
 
-- name: Update package cache on Debian/Ubuntu systems
-  hosts: grafana
-  become: true
-  tasks:
-    - name: Populate Apt's Cache with package definitions to avoid "no such package" errors
-      ansible.builtin.apt:
-        update_cache: yes
-
 - name: Install Docker and Docker Compose
   hosts: grafana
   become: yes
