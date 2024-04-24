@@ -7,7 +7,7 @@ uuid=$(uuid)
 fi
 
 app_dir="/home/tjo/GDC_infra"
-root_dir="$app_dir/temp/$uuid"
+root_dir="$app_dir/.mg/$uuid"
 
 owner="thibault"
 project="cli-gcp"
