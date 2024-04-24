@@ -63,12 +63,12 @@ echo "ansible all -vvvvv -m ping -i $TF_VAR_ansible_inventory_path"
 
 echo "new cluster uuid : $uuid"
 
-ansible all -vvvvv -m ping -i $TF_VAR_ansible_inventory_path
+ansible all -m ping -i $TF_VAR_ansible_inventory_path
 
 while [ $? -ne 0 ]; do
   echo "waiting for nodes to come online"
   sleep 10
-  ansible all -vvvvv -m ping -i $TF_VAR_ansible_inventory_path
+  ansible all -m ping -i $TF_VAR_ansible_inventory_path
 done
 
 ansible-playbook -i $TF_VAR_ansible_inventory_path ./ansible/playbooks/single_quark.yaml
