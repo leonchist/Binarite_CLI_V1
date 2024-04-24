@@ -132,3 +132,4 @@ override.tf.json
 .terraform
 terraform.rc
 .kubeconfig
+.mg
