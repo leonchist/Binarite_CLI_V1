@@ -7,18 +7,28 @@ output "outputs" {
     },
     quark : {
       instance_id : module.quark.instance_id,
-      private_ip : module.quark.vm_private_ips,
-      public_ip : module.quark.vm_public_ips
     },
     bastion : {
       instance_id : module.bastion.instance_id,
-      private_ip : module.bastion.vm_private_ips,
-      public_ip : module.bastion.vm_public_ips
     },
     grafana : {
       instance_id : module.grafana_prometheus.instance_id,
-      private_ip : module.grafana_prometheus.vm_private_ips,
-      public_ip : module.grafana_prometheus.vm_public_ips
     }
+  }
+}
+
+output "public_ips" {
+  value = {
+    quark: module.quark.vm_public_ips,
+    grafana: module.grafana_prometheus.vm_public_ips,
+    bastion: module.bastion.vm_public_ips,
+  }
+}
+
+output "private_ips" {
+  value = {
+    quark: module.quark.vm_private_ips,
+    grafana: module.grafana_prometheus.vm_private_ips,
+    bastion: module.bastion.vm_private_ips,
   }
 }
