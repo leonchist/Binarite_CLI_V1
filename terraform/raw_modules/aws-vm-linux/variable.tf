@@ -84,7 +84,11 @@ variable "ami_name" {
   default     = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"
 }
 
-variable "startup_script" {
+variable "ssh_username" {
+  default = "metagravity"
+}
+
+variable "vm_user_data" {
   type    = string
   default = null
 }

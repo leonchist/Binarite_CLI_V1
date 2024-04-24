@@ -13,6 +13,15 @@ data "aws_ami" "linux_ami" {
   }
 }
 
+locals {
+  user_data = var.vm_user_data != null ? var.vm_user_data : <<EOF
+  #cloud-config
+  system_info:
+    default_user:
+      name: ${var.ssh_username}
+  EOF
+}
+
 
 module "aws-vm-linux" {
   source = "../aws-vm-base"
@@ -22,7 +31,7 @@ module "aws-vm-linux" {
   vm_size = var.vm_size
 
   private_ip             = var.private_ip
-  vm_user_data           = var.startup_script
+  vm_user_data           = local.user_data
   vpc_security_group_ids = var.vpc_security_group_ids
   ssh_key_name           = var.ssh_key_name
   subnet_id              = var.subnet_id
