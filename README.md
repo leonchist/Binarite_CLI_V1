@@ -20,9 +20,6 @@ This CLI tool automates the management and deployment of infrastructure using Te
 └── .env # Environment variables file. Auto-created on setup if does not exist.
 
 
-## CLI name
-You can set CLI command name by setting `COMMAND_NAME` variable in `.env` file.
-
 ## Installation
 
 To install the CLI tool, follow these steps:
@@ -56,31 +53,31 @@ To install the CLI tool, follow these steps:
 
 ## Usage
 
-After installation, you can use the command specified in your `.env` file (`COMMAND_NAME`) to manage your infrastructure:
+After installation, you can use the commands to manage your infrastructure:
 
 - **Initialize Modules**
   ```bash
-  your_command_name init
+  mg init
    ```
 
 - **Destroy Resources**
   ```bash
-  your_command_name destroy [module_name|all]
+  mg destroy [module_name|all]
    ```
 
 - **List Environments**
   ```bash
-  your_command_name list_envs
+  mg list_envs
    ```
 
 - **Destroy Specific Environment**
   ```bash
-   your_command_name destroy_env [eu|us]
+   mg destroy_env [eu|us]
    ```  
 
 - **Help**
   ```bash
-   your_command_name help
+   mg help
    ```
 
 

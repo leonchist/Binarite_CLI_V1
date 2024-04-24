@@ -15,7 +15,7 @@ fi
 
 source "$SCRIPT_DIR/terraform.sh"
 
-METHODS=(init apply destroy create list_envs destroy_env help)
+METHODS=(server init apply destroy create list_envs destroy_env help)
 
 function contains_element {
     local e match="$1"
@@ -24,9 +24,18 @@ function contains_element {
     return 1
 }
 
+
 if contains_element "$1" "${METHODS[@]}"; then
-    source "$SCRIPT_DIR/app/methods/$1.sh"
-    "$1" "$2"
+    method=$1
+    shift # remove the method name from the argument list
+    source "$SCRIPT_DIR/app/methods/$method.sh"
+    if declare -f $method > /dev/null; then
+        # If the function exists, call it with all remaining arguments
+        $method "$@"
+    else
+        echo "Error: $method is not a function or not defined in the sourced script."
+        exit 1
+    fi
 else
     echo "Invalid command. For a list of commands, run: $0 help"
 fi
