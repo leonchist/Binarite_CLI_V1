@@ -15,7 +15,6 @@ resource "aws_instance" "vm" {
   user_data_replace_on_change = true
 
   get_password_data = var.vm_get_password
-
   user_data = var.vm_user_data
 
   root_block_device {
