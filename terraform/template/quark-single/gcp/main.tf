@@ -3,14 +3,14 @@ resource "google_service_account" "default" {
   display_name = "Platform Service Account"
 }
 
-module "gcp-net" {
+module "gcp_net" {
   source              = "../../../../terraform/raw_modules/gcp-network"
   local_ip_cidr_range = var.subnet_local_ip_range
 }
 
 resource "google_compute_firewall" "allow_quark" {
   name          = "allow-quark"
-  network       = module.gcp-net.vpc_link
+  network       = module.gcp_net.vpc_link
   target_tags   = ["allow-quark"]
   source_ranges = ["0.0.0.0/0"]
 
@@ -23,7 +23,7 @@ resource "google_compute_firewall" "allow_quark" {
 
 resource "google_compute_firewall" "allow_quark_metrics" {
   name          = "allow-quark-metrics"
-  network       = module.gcp-net.vpc_link
+  network       = module.gcp_net.vpc_link
   target_tags   = ["allow-quark-metrics"]
   source_ranges = [var.subnet_local_ip_range]
 
@@ -39,9 +39,9 @@ module "quark" {
   vm_name               = "quark"
   owner                 = var.metadata.Owner
   service_account_email = google_service_account.default.email
-  subnet_link           = module.gcp-net.subnet_link
+  subnet_link           = module.gcp_net.subnet_link
   ssh_publickey         = file(var.public_key)
-  vm_size               = "l"
+  vm_size               = var.quark_vm_size
   with_public_ip        = true
   tags                  = ["allow-ssh-local", "allow-quark", "allow-quark-metrics"]
   ssh_username          = var.user
@@ -51,7 +51,7 @@ module "quark" {
 
 resource "google_compute_firewall" "allow_grafana" {
   name          = "allow-grafana"
-  network       = module.gcp-net.vpc_link
+  network       = module.gcp_net.vpc_link
   target_tags   = ["allow-grafana"]
   source_ranges = ["0.0.0.0/0"]
 
@@ -67,7 +67,7 @@ module "grafana" {
   vm_name               = "grafana"
   owner                 = var.metadata.Owner
   service_account_email = google_service_account.default.email
-  subnet_link           = module.gcp-net.subnet_link
+  subnet_link           = module.gcp_net.subnet_link
   ssh_publickey         = file(var.public_key)
   with_public_ip        = true
   tags                  = ["allow-ssh-local", "allow-grafana"]
@@ -77,12 +77,12 @@ module "grafana" {
 
 module "bastion" {
   source                = "../../../../terraform/raw_modules/gcp-vm-linux"
-  basename              = var.metadata.Owner
+  basename              = var.metadata.Project
   vm_name               = "bastion"
   owner                 = var.metadata.Owner
   startup_script        = null
   service_account_email = google_service_account.default.email
-  subnet_link           = module.gcp-net.subnet_link
+  subnet_link           = module.gcp_net.subnet_link
   with_public_ip        = true
   ssh_publickey         = file(var.public_key)
   tags                  = ["allow-ssh"]

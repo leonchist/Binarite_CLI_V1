@@ -1,7 +1,7 @@
 locals {
   metadata = {
     for key, value in var.metadata :
-      lower(key) => lower(value)
+    lower(key) => lower(value)
   }
 }
 
@@ -11,7 +11,7 @@ resource "google_compute_address" "static_ip" {
   name  = "${var.basename}-${var.vm_name}-ip-${var.owner}"
 }
 
-resource "google_compute_instance" "gcp-vm-linux" {
+resource "google_compute_instance" "gcp_vm_linux" {
   name         = "${var.basename}-${var.vm_name}-${var.owner}"
   machine_type = var.available_vm_size[var.vm_size]
   tags         = var.tags

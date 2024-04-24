@@ -2,6 +2,10 @@ variable "gcp_project" {
   default = "platform-419411"
 }
 
+variable "quark_vm_size" {
+  default = "l"
+}
+
 variable "user" {
   default = "metagravity"
 }
@@ -34,12 +38,4 @@ variable "metadata" {
     Project = string
     Uuid    = string
   })
-
-  default = {
-    Env     = "Dev"
-    Role    = "Cluster"
-    Owner   = null
-    Project = null
-    Uuid    = null
-  }
 }

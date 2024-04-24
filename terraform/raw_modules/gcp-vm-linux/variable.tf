@@ -1,10 +1,10 @@
 variable "metadata" {
   type = object({
-    Env = string
-    Role = string
-    Owner = string
+    Env     = string
+    Role    = string
+    Owner   = string
     Project = string
-    Uuid = string
+    Uuid    = string
   })
 }
 
@@ -30,7 +30,7 @@ variable "vm_size" {
 }
 
 variable "startup_script" {
-  type = string
+  type    = string
   default = null
 }
 
