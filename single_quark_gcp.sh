@@ -18,6 +18,7 @@ export TF_DATA_DIR=$root_dir/.terraform
 export TF_VAR_public_key="$app_dir/gdc-infra.pub"
 export TF_VAR_private_key="$app_dir/gdc-infra"
 export TF_VAR_subnet_local_ip_range="10.0.10.0/24"
+export TF_VAR_server_region="us-east1"
 
 # Generate JSON using jq
 json=$(jq -n \

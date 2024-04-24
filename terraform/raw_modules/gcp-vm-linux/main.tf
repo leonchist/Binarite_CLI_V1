@@ -39,4 +39,6 @@ resource "google_compute_instance" "gcp_vm_linux" {
     email  = var.service_account_email
     scopes = ["cloud-platform"]
   }
+
+  zone = var.zone
 }

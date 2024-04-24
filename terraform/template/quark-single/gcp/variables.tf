@@ -30,6 +30,9 @@ variable "ansible_inventory_path" {
 variable "known_host_path" {
 }
 
+variable "server_region" {
+}
+
 variable "metadata" {
   type = object({
     Env     = string
