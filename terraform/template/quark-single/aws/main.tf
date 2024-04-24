@@ -15,6 +15,8 @@ module "quark" {
   vm_size                = var.quark_vm_size
   env                    = { tags = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}_QuarkServer_${var.metadata.Owner}", Source = "Terraform" }) }
 
+  ssh_username = var.user
+
   providers = {
     aws = aws
   }
@@ -27,6 +29,8 @@ module "grafana_prometheus" {
   subnet_id              = module.aws_net.subnet_id
   ssh_key_name           = aws_key_pair.ssh_key.key_name
   private_ip             = "10.0.1.150"
+
+  ssh_username = var.user
 
   env = { tags = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}_GrafanaServer_${var.metadata.Owner}", Source = "Terraform" }) }
 
@@ -42,6 +46,8 @@ module "bastion" {
   subnet_id              = module.aws_net.subnet_id
   ssh_key_name           = aws_key_pair.ssh_key.key_name
   private_ip             = "10.0.1.200"
+
+  ssh_username = var.user
 
   env = { tags = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}_BastionServer_${var.metadata.Owner}", Source = "Terraform" }) }
 

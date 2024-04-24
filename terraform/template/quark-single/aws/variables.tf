@@ -1,5 +1,6 @@
 variable "user" {
   type = string
+  default = "metagravity"
 }
 
 variable "server_region" {
@@ -16,6 +17,7 @@ variable "private_key" {
 
 variable "quark_vm_size" {
   type = string
+  default = "l"
 }
 
 variable "ansible_inventory_path" {
