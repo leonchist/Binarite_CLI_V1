@@ -26,23 +26,23 @@ variable "public_key" {
 variable "env" {
   type = object({
     tags = object({
-      Source = string
-      Env    = string
-      Owner = string
-      App = string
+      Source  = string
+      Env     = string
+      Owner   = string
+      App     = string
       Project = string
-      Role = string
+      Role    = string
     })
   })
 
   default = {
     tags = {
-      Source = "Terraform"
-      Env = "Dev"
-      Owner = "Hubert"
-      App = "Forwarder"
+      Source  = "Terraform"
+      Env     = "Dev"
+      Owner   = "Hubert"
+      App     = "Forwarder"
       Project = "Quark"
-      Role = "Server"
+      Role    = "Server"
     }
   }
 }

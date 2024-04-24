@@ -17,7 +17,7 @@ module "eoc-bots-eu" {
   private_ip             = format("10.0.1.%d", 50 + count.index)
   vm_size                = "c6i.4xlarge"
   vm_user_data           = file("./user_data.txt")
-  ami_id = data.aws_ami.windows_ami-eu.id
+  ami_id                 = data.aws_ami.windows_ami-eu.id
 
   env = var.env
 

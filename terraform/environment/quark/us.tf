@@ -1,7 +1,7 @@
 resource "aws_key_pair" "ssh_key_us" {
   public_key = file(var.public_key)
   provider   = aws.us_west_1
-  tags = var.env.tags
+  tags       = var.env.tags
 }
 
 module "quark-servers-us" {

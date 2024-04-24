@@ -59,7 +59,7 @@ module "grafana_us" {
   source    = "../../raw_modules/aws-elasticip-with-domain"
   domain    = "mg-gdc.link"
   subdomain = "grafana-us"
-  env = var.env
+  env       = var.env
 
   providers = {
     aws = aws.us_west_1
@@ -70,7 +70,7 @@ module "agents_us" {
   source    = "../../raw_modules/aws-elasticip-with-domain"
   domain    = "mg-gdc.link"
   subdomain = "agents-us"
-  env = var.env
+  env       = var.env
 
   providers = {
     aws = aws.us_west_1
@@ -82,7 +82,7 @@ module "forwarder_us" {
   source    = "../../raw_modules/aws-elasticip-with-domain"
   domain    = "mg-gdc.link"
   subdomain = format("forwarder-us-%0d", count.index)
-  env = var.env
+  env       = var.env
 
   providers = {
     aws = aws.us_west_1
@@ -95,7 +95,7 @@ module "forwarder_eu" {
   source    = "../../raw_modules/aws-elasticip-with-domain"
   domain    = "mg-gdc.link"
   subdomain = format("forwarder-eu-%0d", count.index)
-  env = var.env
+  env       = var.env
 
   providers = {
     aws = aws.eu_central_1

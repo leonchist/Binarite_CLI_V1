@@ -20,23 +20,23 @@ variable "aws_secrets" {
 variable "env" {
   type = object({
     tags = object({
-      Source = string
-      Env    = string
-      Owner = string
-      App = string
+      Source  = string
+      Env     = string
+      Owner   = string
+      App     = string
       Project = string
-      Role = string
+      Role    = string
     })
   })
 
   default = {
     tags = {
-      Source = "Terraform"
-      Env = "Dev"
-      Owner = "Hubert"
-      App = "Agents"
+      Source  = "Terraform"
+      Env     = "Dev"
+      Owner   = "Hubert"
+      App     = "Agents"
       Project = "Quark"
-      Role = "Server"
+      Role    = "Server"
     }
   }
 }

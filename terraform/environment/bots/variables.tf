@@ -6,23 +6,23 @@ variable "instance_count_per_region" {
 variable "env" {
   type = object({
     tags = object({
-      Source = string
-      Env    = string
-      Owner = string
-      App = string
+      Source  = string
+      Env     = string
+      Owner   = string
+      App     = string
       Project = string
-      Role = string
+      Role    = string
     })
   })
 
   default = {
     tags = {
-      Source = "Terraform"
-      Env = "Dev"
-      Owner = "Hubert"
-      App = "Bots"
+      Source  = "Terraform"
+      Env     = "Dev"
+      Owner   = "Hubert"
+      App     = "Bots"
       Project = "Quark"
-      Role = "Server"
+      Role    = "Server"
     }
   }
 }

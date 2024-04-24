@@ -1,7 +1,7 @@
 resource "aws_key_pair" "ssh_key_eu" {
   public_key = file(var.public_key)
   provider   = aws.eu_central_1
-  tags = var.env.tags
+  tags       = var.env.tags
 }
 
 module "quark-servers-eu" {
