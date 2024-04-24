@@ -19,16 +19,16 @@ output "outputs" {
 
 output "public_ips" {
   value = {
-    quark: module.quark.vm_public_ips,
-    grafana: module.grafana_prometheus.vm_public_ips,
-    bastion: module.bastion.vm_public_ips,
+    quark : aws_eip.elastic_ip[0].public_ip,
+    grafana : aws_eip.elastic_ip[1].public_ip,
+    bastion : aws_eip.elastic_ip[2].public_ip,
   }
 }
 
 output "private_ips" {
   value = {
-    quark: module.quark.vm_private_ips,
-    grafana: module.grafana_prometheus.vm_private_ips,
-    bastion: module.bastion.vm_private_ips,
+    quark : module.quark.vm_private_ips,
+    grafana : module.grafana_prometheus.vm_private_ips,
+    bastion : module.bastion.vm_private_ips,
   }
 }
