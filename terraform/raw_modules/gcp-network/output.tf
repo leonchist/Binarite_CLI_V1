@@ -6,6 +6,14 @@ output "subnet_link" {
   value = google_compute_subnetwork.subnet.self_link
 }
 
+output "allow_ssh_fw_tag" {
+  value = local.allow_ssh_fw_name
+}
+
+output "allow_ssh_local_fw_tag" {
+  value = local.allow_ssh_local_fw_name
+}
+
 output "resource_ids" {
   value = {
     vpc_id          = google_compute_network.vpc.id

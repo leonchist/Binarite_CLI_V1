@@ -27,10 +27,14 @@ resource "google_compute_router_nat" "nat" {
   }
 }
 
+locals {
+  allow_ssh_fw_name = "${var.basename}-allow-ssh-fw-${var.owner}"
+}
+
 resource "google_compute_firewall" "allow_ssh" {
-  name          = "allow-ssh"
+  name          = local.allow_ssh_fw_name
   network       = google_compute_network.vpc.self_link
-  target_tags   = ["allow-ssh"]
+  target_tags   = [local.allow_ssh_fw_name]
   source_ranges = ["0.0.0.0/0"]
 
   allow {
@@ -39,10 +43,14 @@ resource "google_compute_firewall" "allow_ssh" {
   }
 }
 
+locals {
+  allow_ssh_local_fw_name = "${var.basename}-allow-ssh-local-fw-${var.owner}"
+}
+
 resource "google_compute_firewall" "allow_ssh_local" {
-  name          = "allow-ssh-local"
+  name          = local.allow_ssh_local_fw_name
   network       = google_compute_network.vpc.self_link
-  target_tags   = ["allow-ssh-local"]
+  target_tags   = [local.allow_ssh_local_fw_name]
   source_ranges = [var.local_ip_cidr_range]
 
   allow {

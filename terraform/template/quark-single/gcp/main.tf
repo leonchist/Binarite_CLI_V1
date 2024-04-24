@@ -6,12 +6,19 @@ resource "google_service_account" "default" {
 module "gcp_net" {
   source              = "../../../../terraform/raw_modules/gcp-network"
   local_ip_cidr_range = var.subnet_local_ip_range
+  basename = var.metadata.Project
+  owner = var.metadata.Owner
+}
+
+locals {
+  allow_quark_fw_tag = "${var.metadata.Project}-quark-fw-${var.metadata.Owner}"
+  allow_quark_metrics_fw_tag = "${var.metadata.Project}-quark-metrics-fw-${var.metadata.Owner}"
 }
 
 resource "google_compute_firewall" "allow_quark" {
-  name          = "allow-quark"
+  name          = local.allow_quark_fw_tag
   network       = module.gcp_net.vpc_link
-  target_tags   = ["allow-quark"]
+  target_tags   = [local.allow_quark_fw_tag]
   source_ranges = ["0.0.0.0/0"]
 
   allow {
@@ -22,9 +29,9 @@ resource "google_compute_firewall" "allow_quark" {
 
 
 resource "google_compute_firewall" "allow_quark_metrics" {
-  name          = "allow-quark-metrics"
+  name          = local.allow_quark_metrics_fw_tag
   network       = module.gcp_net.vpc_link
-  target_tags   = ["allow-quark-metrics"]
+  target_tags   = [local.allow_quark_metrics_fw_tag]
   source_ranges = [var.subnet_local_ip_range]
 
   allow {
@@ -43,16 +50,20 @@ module "quark" {
   ssh_publickey         = file(var.public_key)
   vm_size               = var.quark_vm_size
   with_public_ip        = true
-  tags                  = ["allow-ssh-local", "allow-quark", "allow-quark-metrics"]
+  tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_quark_fw_tag, local.allow_quark_metrics_fw_tag]
   ssh_username          = var.user
   metadata              = var.metadata
 }
 
+locals {
+  allow_grafana_fw_tag = "${var.metadata.Project}-grafana-fw-${var.metadata.Owner}"
+}
+
 
 resource "google_compute_firewall" "allow_grafana" {
-  name          = "allow-grafana"
+  name          = local.allow_grafana_fw_tag
   network       = module.gcp_net.vpc_link
-  target_tags   = ["allow-grafana"]
+  target_tags   = [local.allow_grafana_fw_tag]
   source_ranges = ["0.0.0.0/0"]
 
   allow {
@@ -70,7 +81,7 @@ module "grafana" {
   subnet_link           = module.gcp_net.subnet_link
   ssh_publickey         = file(var.public_key)
   with_public_ip        = true
-  tags                  = ["allow-ssh-local", "allow-grafana"]
+  tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_grafana_fw_tag]
   ssh_username          = var.user
   metadata              = var.metadata
 }
@@ -85,7 +96,7 @@ module "bastion" {
   subnet_link           = module.gcp_net.subnet_link
   with_public_ip        = true
   ssh_publickey         = file(var.public_key)
-  tags                  = ["allow-ssh"]
+  tags                  = [module.gcp_net.allow_ssh_fw_tag]
   ssh_username          = var.user
   metadata              = var.metadata
 }
