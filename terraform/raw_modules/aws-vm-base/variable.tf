@@ -1,23 +1,25 @@
 variable "env" {
   type = object({
     tags = object({
-      Source = string
-      Env    = string
-      Owner = string
-      App = string
+      Name    = string
+      Source  = string
+      Env     = string
+      Owner   = string
       Project = string
-      Role = string
+      Role    = string
+      Uuid    = string
     })
   })
 
   default = {
     tags = {
-      Source = ""
-      Env = ""
-      Owner = ""
-      App = ""
+      Name    = ""
+      Source  = ""
+      Env     = ""
+      Owner   = ""
       Project = ""
-      Role = ""
+      Role    = ""
+      Uuid    = ""
     }
   }
 }
@@ -50,10 +52,20 @@ variable "vm_name" {
   default     = "aws_vm"
 }
 
+variable "available_vm_size" {
+  type = map(string)
+  default = {
+    s  = "t3.micro"
+    m  = "c5.large"
+    l  = "c5.4xlarge"
+    xl = "c5.12xlarge"
+  }
+}
+
 variable "vm_size" {
-  description = ""
+  description = "VM sizes, allowed values are s, m, l, xl"
   type        = string
-  default     = "t3.micro"
+  default     = "s"
 }
 
 variable "provision_uri" {
@@ -75,7 +87,8 @@ variable "aws_secrets" {
   default = null
 }
 variable "vm_user_data" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "vm_disk_size" {

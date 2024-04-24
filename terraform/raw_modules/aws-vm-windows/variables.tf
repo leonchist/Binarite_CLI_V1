@@ -1,23 +1,23 @@
 variable "env" {
   type = object({
     tags = object({
-      Source = string
-      Env    = string
-      Owner = string
-      App = string
+      Source  = string
+      Env     = string
+      Owner   = string
+      App     = string
       Project = string
-      Role = string
+      Role    = string
     })
   })
 
   default = {
     tags = {
-      Source = ""
-      Env = ""
-      Owner = ""
-      App = ""
+      Source  = ""
+      Env     = ""
+      Owner   = ""
+      App     = ""
       Project = ""
-      Role = ""
+      Role    = ""
     }
   }
 }
@@ -49,7 +49,7 @@ variable "vm_name" {
 variable "vm_size" {
   description = ""
   type        = string
-  default     = "t3.micro"
+  default     = "s"
 }
 
 variable "ssh_key_name" {

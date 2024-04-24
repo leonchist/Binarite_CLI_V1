@@ -1,23 +1,25 @@
 variable "env" {
   type = object({
     tags = object({
-      Source = string
-      Env    = string
-      Owner = string
-      App = string
+      Name    = string
+      Source  = string
+      Env     = string
+      Owner   = string
       Project = string
-      Role = string
+      Role    = string
+      Uuid    = string
     })
   })
 
   default = {
     tags = {
-      Source = ""
-      Env = ""
-      Owner = ""
-      App = ""
+      Name    = ""
+      Source  = ""
+      Env     = ""
+      Owner   = ""
       Project = ""
-      Role = ""
+      Role    = ""
+      Uuid    = ""
     }
   }
 }
@@ -48,7 +50,7 @@ variable "vm_name" {
 variable "vm_size" {
   description = ""
   type        = string
-  default     = "t3.micro"
+  default     = "s"
 }
 
 variable "provision_uri" {
@@ -83,7 +85,8 @@ variable "ami_name" {
 }
 
 variable "startup_script" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "eip_allocation_id" {

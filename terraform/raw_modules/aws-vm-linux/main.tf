@@ -21,18 +21,10 @@ module "aws-vm-linux" {
   vm_name = var.vm_name
   vm_size = var.vm_size
 
-  private_ip = var.private_ip
-
+  private_ip             = var.private_ip
+  vm_user_data           = var.startup_script
   vpc_security_group_ids = var.vpc_security_group_ids
   ssh_key_name           = var.ssh_key_name
   subnet_id              = var.subnet_id
-  vm_user_data = templatefile(
-    var.startup_script,
-    {
-      AWS_ACCESS_KEY_ID     = var.aws_secrets.key_id,
-      AWS_SECRET_ACCESS_KEY = var.aws_secrets.access_key,
-      PROVISION_URI         = var.provision_uri
-  })
-
-  env = var.env
+  env                    = var.env
 }
