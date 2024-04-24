@@ -4,7 +4,6 @@ variable "env" {
       Source  = string
       Env     = string
       Owner   = string
-      App     = string
       Project = string
       Role    = string
     })
@@ -15,7 +14,6 @@ variable "env" {
       Source  = ""
       Env     = ""
       Owner   = ""
-      App     = ""
       Project = ""
       Role    = ""
     }

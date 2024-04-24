@@ -1,7 +1,7 @@
 resource "aws_key_pair" "ssh_key" {
   public_key = file(var.public_key)
   provider   = aws
-  tags       = var.env.tags
+  tags       = merge(var.metadata, { Name = "${var.metadata.Project}_QuarkSshKey_${var.metadata.Owner}" })
 }
 
 module "quark" {
@@ -11,11 +11,9 @@ module "quark" {
   subnet_id              = module.aws_net.subnet_id
   vm_name                = "quark"
   ssh_key_name           = aws_key_pair.ssh_key.key_name
-  private_ip             = var.quark_private_ip
-  vm_size                = "l"
-  env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "Platform-quark_server-Simon", UUID = var.quark_deployment_id })
-  })
+  private_ip             = "10.0.1.100"
+  vm_size                = var.quark_vm_size
+  env                    = { tags = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}_QuarkServer_${var.metadata.Owner}", Source = "Terraform" }) }
 
   providers = {
     aws = aws
@@ -28,11 +26,9 @@ module "grafana_prometheus" {
   vpc_security_group_ids = [module.aws_net.security_group_id]
   subnet_id              = module.aws_net.subnet_id
   ssh_key_name           = aws_key_pair.ssh_key.key_name
-  private_ip             = var.grafana_private_ip
+  private_ip             = "10.0.1.150"
 
-  env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "Platform-grafana_server-Simon", UUID = var.quark_deployment_id })
-  })
+  env = { tags = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}_GrafanaServer_${var.metadata.Owner}", Source = "Terraform" }) }
 
   providers = {
     aws = aws
@@ -45,11 +41,9 @@ module "bastion" {
   vpc_security_group_ids = [module.aws_net.security_group_id]
   subnet_id              = module.aws_net.subnet_id
   ssh_key_name           = aws_key_pair.ssh_key.key_name
-  private_ip             = var.bastion_private_ip
+  private_ip             = "10.0.1.200"
 
-  env = merge(var.env, {
-    tags = merge(var.env.tags, { Name = "Platform-bastion_server-Simon", UUID = var.quark_deployment_id })
-  })
+  env = { tags = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}_BastionServer_${var.metadata.Owner}", Source = "Terraform" }) }
 
   providers = {
     aws = aws

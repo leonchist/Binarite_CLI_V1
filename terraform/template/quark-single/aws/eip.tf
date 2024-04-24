@@ -1,7 +1,11 @@
+locals {
+  services = ["Quark", "Grafana", "Bastion"]
+}
+
 resource "aws_eip" "elastic_ip" {
   count  = 3
   domain = "vpc"
-  tags   = merge(var.env.tags, { Name = "Platform-${var.services[count.index]}_elastic_ip-Simon", UUID = var.quark_deployment_id })
+  tags   = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}${local.services[count.index]}ElasticIP_${var.metadata.Owner}" })
 }
 
 resource "aws_eip_association" "eip_assoc_quark" {
