@@ -23,11 +23,6 @@ else
     exit 1
 fi
 
-if [ -z "$COMMAND_NAME" ]; then
-    echo "COMMAND_NAME not defined in .env file!"
-    exit 1
-fi
-
 echo "Running setup script..."
 "$SETUP_DIR/install.sh"
 
