@@ -2,7 +2,7 @@
 # server.sh - Script to handle server creation command with variable parameters.
 
 # Default values
-instance_size="M"
+instance_size="l"
 instance_count=1
 git_repository=""
 git_branch=""
