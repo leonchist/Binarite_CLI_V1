@@ -12,22 +12,18 @@ output "resource_ids" {
   }
 }
 
-output "bastion-public_ip" {
-  value = module.bastion.public_ip
+output "public_ips" {
+  value = {
+    quark = module.quark.public_ip
+    grafana = module.grafana.public_ip
+    bastion = module.bastion.public_ip
+  }
 }
 
-output "quark-public_ip" {
-  value = module.quark.public_ip
-}
-
-output "quark-private_ips" {
-  value = module.quark.private_ips
-}
-
-output "grafana-public_ip" {
-  value = module.grafana.public_ip
-}
-
-output "grafana-private_ips" {
-  value = module.grafana.private_ips
+output "private_ips" {
+    value = {
+    quark : module.quark.private_ips,
+    grafana : module.grafana.private_ips,
+    bastion : module.bastion.private_ips,
+  }
 }

@@ -145,10 +145,10 @@ create_server() {
         ansible all -m ping -i $TF_VAR_ansible_inventory_path
     done
 
-    ansible-playbook -i $TF_VAR_ansible_inventory_path ./ansible/playbooks/single_quark.yaml
+    ansible-playbook -i $TF_VAR_ansible_inventory_path $ROOT_DIR/ansible/playbooks/single_quark.yaml
 
     echo "new cluster uuid : $uuid"
-    terraform -chdir="$tf_conf" output
+    terraform -chdir="$tf_conf" output public_ips
 }
 
 destroy_server() {

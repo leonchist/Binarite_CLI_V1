@@ -1,4 +1,4 @@
-output "outputs" {
+output "resource_ids" {
   value = {
     network : {
       vpc_id : module.aws_net.vpc_id,
