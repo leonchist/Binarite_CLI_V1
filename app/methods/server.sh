@@ -1,18 +1,21 @@
 #!/bin/bash
-# server.sh - Script to handle server creation command with variable parameters.
+# server.sh - Script to handle server management commands with variable parameters.
 
 # Default values
 instance_size="l"
 instance_count=1
+cloud_provider="gcp"
 git_repository=""
 git_branch=""
-provider="gcp"
-region="europe-west1"
-uuid=""
+uuid=$(uuidgen)
 
 # Usage function for displaying help
 usage() {
-    echo "Usage: $0 server [-size instance_size] [-count instance_count] [-repo git_repository] [-branch git_branch] [-provider provider] [-region region]"
+    echo "Usage:"
+    echo "  mg server create [-size instance_size] [-count instance_count] [--cloud cloud_provider] [-repo git_repository] [-branch git_branch]"
+    echo "  mg server destroy -id UUID"
+    echo "  mg server show -id UUID"
+    echo "  mg server help"
     exit 1
 }
 
@@ -20,141 +23,109 @@ usage() {
 set_param() {
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
-            -destroy)
-                uuid="$2"; shift 2;;
             -size)
                 instance_size="$2"; shift 2;;
             -count)
                 instance_count="$2"; shift 2;;
+            --cloud)
+                if [[ "$2" == "aws" || "$2" == "gcp" || "$2" == "azure" ]]; then
+                    cloud_provider="$2"; shift 2;
+                else
+                    echo "Error: Unsupported cloud provider '$2'"
+                    usage
+                fi
+                ;;
             -repo)
                 git_repository="$2"; shift 2;;
             -branch)
                 git_branch="$2"; shift 2;;
-            -provider)
-                provider="$2"; shift 2;;
-            -region)
-                region="$2"; shift 2;;
-            -owner)
-                OWNER="$2"; shift 2;;
-            -project)
-                PROJECT="$2"; shift 2;;
-            -*)
-                echo "Error: Invalid option '$1'"
-                usage
-                ;;
+            -id)
+                uuid="$2"; shift 2;;
             *)
-                echo "Error: Unexpected parameter '$1'"
+                echo "Error: Invalid or unexpected option '$1'"
                 usage
                 ;;
         esac
     done
 }
 
-server() {
-    # Check for parameters
-    if [[ "$#" -eq 0 ]]; then
-        echo "No parameters specified. Using default values."
-    else
-        set_param "$@"
-    fi
+apply_server_module() {
+    SCRIPT_DIR=$(dirname "$(realpath "$0")")
+    source "$SCRIPT_DIR/terraform.sh"
 
+    # Generate a UUID and set as an environment variable
+    export TF_VAR_uuid="$uuid"
+
+    # Setup other environment variables for Terraform
+    export TF_VAR_instance_size="$instance_size"
+    export TF_VAR_instance_count="$instance_count"
+    export TF_VAR_git_repository="$git_repository"
+    export TF_VAR_git_branch="$git_branch"
+
+    # Assuming 'server' is a valid module within your Terraform setup
+    if is_valid_module "server"; then
+        local module_path=$(get_module_path "server")
+        echo "Applying Terraform module: server"
+        cd "$module_path" || exit
+        terraform apply -auto-approve
+    else
+        echo "Error: Server module not found in Terraform configurations."
+        exit 1
+    fi
+}
+
+create_server() {
     echo "Starting server setup with the following parameters:"
     echo "Instance Size: $instance_size"
     echo "Instance Count: $instance_count"
+    echo "Cloud Provider: $cloud_provider"
+    echo "Environment ID: $uuid"
     if [[ -n "$git_repository" ]]; then
         echo "Repository: $git_repository"
     fi
     if [[ -n "$git_branch" ]]; then
         echo "Branch: $git_branch"
     fi
-    # Function to apply the Terraform module with the specified parameters
-    apply_server_module # uncomment for terraform integration
-}
 
-# Function to apply the Terraform module with the specified parameters
-apply_server_module() {
-    SCRIPT_DIR=$(dirname "$(realpath "$0")")
-    source "$SCRIPT_DIR/terraform.sh"
-
-    # Setup environment variables for Terraform
-    export TF_VAR_instance_size="$instance_size"
-    export TF_VAR_instance_count="$instance_count"
-    export TF_VAR_git_repository="$git_repository"
-    export TF_VAR_git_branch="$git_branch"
-    export TF_VAR_server_region="$region"
-
-    if [[ -z "$uuid" ]]; then
-        creation_mode=true
-        uuid=$(uuid)
-    fi
-    work_dir="$HOME/.mg/$uuid"
-
-    # Generate JSON using jq
-    json=$(jq -n \
-    --arg owner "$OWNER" \
-    --arg project "$PROJECT" \
-    --arg uuid "$uuid" \
-    '{
-        Owner: $owner,
-        Project: $project,
-        Uuid: $uuid,
-        Env: "Dev",
-        Role: "Cluster",
-    }')
-    export TF_VAR_metadata=$json
-    export TF_VAR_ansible_inventory_path="$work_dir/ansible/inventory/hosts.ini"
-    export TF_VAR_known_host_path=$work_dir/known_hosts
-
-    export TF_IN_AUTOMATION=1
-    export TF_DATA_DIR=$work_dir/.terraform
-    tf_state=$work_dir/state/terraform.tfstate
-    tf_conf="$ROOT_DIR/terraform/template/quark-single/$provider"
-
-    export TF_VAR_public_key="$ROOT_DIR/gdc-infra.pub" # TODO generate from terrafotm
-    export TF_VAR_private_key="$ROOT_DIR/gdc-infra" # TODO generate from terrafotm
-
-    export ANSIBLE_CONFIG=$ROOT_DIR/ansible.cfg
-
-    echo "Debug : Using tf configuration from : $tf_conf"
-    echo "Debug : Setting tf state to : $tf_state"
-
-    if [[ $creation_mode = true ]]; then
-        create_server
-    else
-        destroy_server
-    fi
-
-    # # Assuming 'server' is a valid module within your Terraform setup
-    # if is_valid_module "server"; then
-    #     local module_path=$(get_module_path "server")
-    #     echo "Applying Terraform module: server"
-    #     cd "$module_path" || exit
-    #     terraform apply -auto-approve
-    # else
-    #     echo "Error: Server module not found in Terraform configurations."
-    #     exit 1
-    # fi
-}
-
-create_server() {
-    terraform -chdir="$tf_conf" init -input=false -backend-config="path=$tf_state"
-    terraform -chdir="$tf_conf" plan -input=false
-    terraform -chdir="$tf_conf" apply -input=false -auto-approve
-
-    ansible all -m ping -i $TF_VAR_ansible_inventory_path
-
-    while [[ $? -ne 0 ]]; do
-        echo "waiting for nodes to come online"
-        sleep 10
-        ansible all -m ping -i $TF_VAR_ansible_inventory_path
-    done
-
-    ansible-playbook -i $TF_VAR_ansible_inventory_path $ROOT_DIR/ansible/playbooks/single_quark.yaml
-
-    echo "new cluster uuid : $uuid"
-    terraform -chdir="$tf_conf" output public_ips
+    #    apply_server_module
 }
 
 destroy_server() {
-    terraform -chdir="$tf_conf" destroy -input=false -auto-approve
+    echo "Destroying environment with ID: $uuid"
+    # Add your logic to destroy the server
 }
+
+show_inventory() {
+    echo "Displaying ansible inventory for server with ID: $uuid"
+    # Add your logic to fetch and display ansible inventory
+}
+
+server() {
+    case "$1" in
+        create|destroy)
+            command=$1
+            shift  # Remove the command from the arguments list
+            set_param "$@"
+            "${command}_server"
+            ;;
+        show)
+            shift  # Remove 'show' from the arguments list
+            set_param "$@"
+            show_inventory
+            ;;
+        help)
+            usage
+            ;;
+        *)
+            echo "Error: Invalid command or parameters."
+            usage
+            ;;
+    esac
+}
+
+# Ensure that the script is not sourced but executed
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    server "$@"
+fi
+
+
