@@ -34,6 +34,10 @@ set_param() {
                 provider="$2"; shift 2;;
             -region)
                 region="$2"; shift 2;;
+            -owner)
+                OWNER="$2"; shift 2;;
+            -project)
+                PROJECT="$2"; shift 2;;
             -*)
                 echo "Error: Invalid option '$1'"
                 usage
