@@ -77,7 +77,7 @@ set_param() {
                 uuid="$2"; shift 2;;
             -project)
                 project="$2"; project_set=true; shift 2;;
-            -private_key)
+            -private-key)
                 private_ssh_key_path="$2"; shift 2;;
             *)
                 echo "Error: Invalid or unexpected option '$1'"
