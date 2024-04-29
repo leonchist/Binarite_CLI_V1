@@ -8,10 +8,12 @@ variable "cloud_region" {
 
 variable "public_key" {
   type = string
+  default = null
 }
 
-variable "private_key" {
+variable "private_key_path" {
   type = string
+  default = null
 }
 
 variable "quark_vm_size" {

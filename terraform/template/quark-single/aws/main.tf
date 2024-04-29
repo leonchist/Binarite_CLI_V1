@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_key_pair" "ssh_key" {
-  public_key = file(var.public_key)
+  public_key = var.public_key
   provider   = aws
   tags       = merge(local.metadata, { Name = "${local.metadata.Project}_QuarkSshKey_${local.metadata.Owner}" })
 }
@@ -66,7 +66,7 @@ resource "local_file" "ansible_inventory" {
     grafana_ip   = module.grafana_prometheus.vm_private_ips[0],
     bastion_ip   = aws_eip.elastic_ip[2].public_ip,
     ansible_user = var.user,
-    private_key  = abspath(var.private_key)
+    private_key  = abspath(var.private_key_path)
     known_host   = var.known_host_path
   })
   filename = var.ansible_inventory_path
