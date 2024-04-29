@@ -13,13 +13,13 @@ variable "user" {
 variable "public_key" {
   description = "Public key as a string"
   type        = string
-  default = null
+  default     = null
 }
 
 variable "private_key_path" {
   description = "Path to the private key to use"
   type        = string
-  default = null
+  default     = null
 }
 
 variable "subnet_local_ip_range" {

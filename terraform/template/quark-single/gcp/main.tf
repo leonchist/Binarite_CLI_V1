@@ -15,25 +15,19 @@ locals {
 }
 
 locals {
-  use_generated_keys = var.private_key_path == null
+  use_generated_keys         = var.private_key_path == null
   generated_private_key_path = "${var.deployment_folder}/id_rsa"
 }
 
-resource "tls_private_key" "rsa_private_key" {
-  count = local.use_generated_keys ? 1 : 0
-  algorithm = "RSA"
-  rsa_bits  = 4096
+module "ssh_key" {
+  count            = local.use_generated_keys ? 1 : 0
+  source           = "../../../../terraform/raw_modules/ssh-key"
+  private_key_path = local.generated_private_key_path
 }
 
-resource "local_file" "private_key" {
-  count = local.use_generated_keys ? 1 : 0
-  filename = local.generated_private_key_path
-  content = tls_private_key.rsa_private_key[0].private_key_openssh
-  file_permission = "600"
-}
 
 locals {
-  public_key = local.use_generated_keys ? tls_private_key.rsa_private_key[0].public_key_openssh : var.public_key
+  public_key       = local.use_generated_keys ? module.ssh_key[0].public_key : var.public_key
   private_key_path = local.use_generated_keys ? local.generated_private_key_path : var.private_key_path
 }
 

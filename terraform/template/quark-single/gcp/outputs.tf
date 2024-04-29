@@ -14,14 +14,14 @@ output "resource_ids" {
 
 output "public_ips" {
   value = {
-    quark = module.quark.public_ip
+    quark   = module.quark.public_ip
     grafana = module.grafana.public_ip
     bastion = module.bastion.public_ip
   }
 }
 
 output "private_ips" {
-    value = {
+  value = {
     quark : module.quark.private_ips,
     grafana : module.grafana.private_ips,
     bastion : module.bastion.private_ips,
