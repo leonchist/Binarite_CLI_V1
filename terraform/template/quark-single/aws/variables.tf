@@ -30,6 +30,10 @@ variable "environment" {
   type        = string
 }
 
+variable "deployment_folder" {
+  type = string
+}
+
 variable "known_host_path" {
   type = string
 }
