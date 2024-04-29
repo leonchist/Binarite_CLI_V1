@@ -58,7 +58,7 @@ module "quark" {
   owner                 = local.metadata.Owner
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp_net.subnet_link
-  ssh_publickey         = file(var.public_key)
+  ssh_publickey         = var.public_key
   vm_size               = var.quark_vm_size
   with_public_ip        = true
   tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_quark_fw_tag, local.allow_quark_metrics_fw_tag]
@@ -91,7 +91,7 @@ module "grafana" {
   owner                 = local.metadata.Owner
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp_net.subnet_link
-  ssh_publickey         = file(var.public_key)
+  ssh_publickey         = var.public_key
   with_public_ip        = true
   tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_grafana_fw_tag]
   ssh_username          = var.user
@@ -108,7 +108,7 @@ module "bastion" {
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp_net.subnet_link
   with_public_ip        = true
-  ssh_publickey         = file(var.public_key)
+  ssh_publickey         = var.public_key
   tags                  = [module.gcp_net.allow_ssh_fw_tag]
   ssh_username          = var.user
   metadata              = local.metadata
@@ -121,7 +121,7 @@ resource "local_file" "ansible_inventory" {
     quark_ip     = module.quark.private_ips[0]
     grafana_ip   = module.grafana.private_ips[0]
     ansible_user = var.user
-    private_key  = abspath(var.private_key)
+    private_key  = abspath(var.private_key_path)
     known_host   = "${var.known_host_path}"
   })
   filename = var.ansible_inventory_path

@@ -11,13 +11,15 @@ variable "user" {
 }
 
 variable "public_key" {
-  description = "Path to the public key to use"
+  description = "Public key as a string"
   type        = string
+  default = null
 }
 
-variable "private_key" {
+variable "private_key_path" {
   description = "Path to the private key to use"
   type        = string
+  default = null
 }
 
 variable "subnet_local_ip_range" {

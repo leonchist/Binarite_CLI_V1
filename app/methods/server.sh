@@ -17,6 +17,8 @@ git_branch=""
 uuid=$(uuidgen)
 owner="get_from_github" # todo: get from github
 project=""
+public_ssh_key=""
+private_ssh_key_path=""
 
 # Usage function for displaying help
 usage() {
@@ -75,6 +77,8 @@ set_param() {
                 uuid="$2"; shift 2;;
             -project)
                 project="$2"; project_set=true; shift 2;;
+            -private_key)
+                private_ssh_key_path="$2"; shift 2;;
             *)
                 echo "Error: Invalid or unexpected option '$1'"
                 usage
@@ -86,6 +90,11 @@ set_param() {
         echo "Error: Project name is required."
         usage
     fi
+
+    if [[ -n "$private_ssh_key_path" && -f "$private_ssh_key_path" ]]; then
+        public_ssh_key=$(ssh-keygen -f $private_ssh_key_path -y)
+    fi
+
 }
 
 apply_server_module() {
@@ -108,8 +117,6 @@ apply_server_module() {
 
     export TF_VAR_ansible_inventory_path="$work_dir/ansible/inventory/hosts.ini"
     export TF_VAR_known_host_path="$work_dir/known_hosts"
-    export TF_VAR_public_key="$ROOT_DIR/gdc-infra.pub"
-    export TF_VAR_private_key="$ROOT_DIR/gdc-infra"
     export ANSIBLE_CONFIG="$ROOT_DIR/ansible.cfg"
     export TF_DATA_DIR="$work_dir/.terraform"
     export TF_IN_AUTOMATION=1
@@ -145,8 +152,6 @@ apply_server_module() {
         echo "TF_VAR_project=$TF_VAR_project"
         echo "TF_VAR_ansible_inventory_path=$TF_VAR_ansible_inventory_path"
         echo "TF_VAR_known_host_path=$TF_VAR_known_host_path"
-        echo "TF_VAR_public_key=$TF_VAR_public_key"
-        echo "TF_VAR_private_key=$TF_VAR_private_key"
         echo "ANSIBLE_CONFIG=$ANSIBLE_CONFIG"
         echo "TF_DATA_DIR=$TF_DATA_DIR"
         echo "TF_IN_AUTOMATION=$TF_IN_AUTOMATION"
@@ -154,6 +159,15 @@ apply_server_module() {
         echo "tf_conf=$tf_conf"
         echo "JSON_Creation_File=$json_file"
     } > "$meta_file"
+
+    if [[ -n $public_ssh_key ]]; then
+        export TF_VAR_public_key="$public_ssh_key"
+        export TF_VAR_private_key_path="$(realpath $private_ssh_key_path)"
+        {
+            echo TF_VAR_public_key=\"$public_ssh_key\"
+            echo TF_VAR_private_key_path=\"$(realpath $private_ssh_key_path)\"
+        } >> "$meta_file"
+    fi
 
     echo "Debug : Using tf configuration from : $tf_conf"
     echo "Debug : Setting tf state to : $tf_state"
@@ -220,8 +234,6 @@ destroy_server() {
         terraform -chdir="$tf_conf" destroy -input=false -auto-approve \
             -var "cloud_region=$TF_VAR_cloud_region" \
             -var "ansible_inventory_path=$TF_VAR_ansible_inventory_path" \
-            -var "public_key=$TF_VAR_public_key" \
-            -var "private_key=$TF_VAR_private_key" \
             -var "known_host_path=$TF_VAR_known_host_path" \
             -var "environment=$json_file"
     else
