@@ -14,6 +14,29 @@ locals {
   gcp_zone = data.google_compute_zones.available.names[0]
 }
 
+locals {
+  use_generated_keys = var.private_key_path == null
+  generated_private_key_path = "${var.deployment_folder}/id_rsa"
+}
+
+resource "tls_private_key" "rsa_private_key" {
+  count = local.use_generated_keys ? 1 : 0
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "local_file" "private_key" {
+  count = local.use_generated_keys ? 1 : 0
+  filename = local.generated_private_key_path
+  content = tls_private_key.rsa_private_key[0].private_key_openssh
+  file_permission = "600"
+}
+
+locals {
+  public_key = local.use_generated_keys ? tls_private_key.rsa_private_key[0].public_key_openssh : var.public_key
+  private_key_path = local.use_generated_keys ? local.generated_private_key_path : var.private_key_path
+}
+
 module "gcp_net" {
   source              = "../../../../terraform/raw_modules/gcp-network"
   local_ip_cidr_range = var.subnet_local_ip_range
@@ -58,7 +81,7 @@ module "quark" {
   owner                 = local.metadata.Owner
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp_net.subnet_link
-  ssh_publickey         = var.public_key
+  ssh_publickey         = local.public_key
   vm_size               = var.quark_vm_size
   with_public_ip        = true
   tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_quark_fw_tag, local.allow_quark_metrics_fw_tag]
@@ -91,7 +114,7 @@ module "grafana" {
   owner                 = local.metadata.Owner
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp_net.subnet_link
-  ssh_publickey         = var.public_key
+  ssh_publickey         = local.public_key
   with_public_ip        = true
   tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_grafana_fw_tag]
   ssh_username          = var.user
@@ -108,7 +131,7 @@ module "bastion" {
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp_net.subnet_link
   with_public_ip        = true
-  ssh_publickey         = var.public_key
+  ssh_publickey         = local.public_key
   tags                  = [module.gcp_net.allow_ssh_fw_tag]
   ssh_username          = var.user
   metadata              = local.metadata
@@ -121,7 +144,7 @@ resource "local_file" "ansible_inventory" {
     quark_ip     = module.quark.private_ips[0]
     grafana_ip   = module.grafana.private_ips[0]
     ansible_user = var.user
-    private_key  = abspath(var.private_key_path)
+    private_key  = abspath(local.private_key_path)
     known_host   = "${var.known_host_path}"
   })
   filename = var.ansible_inventory_path

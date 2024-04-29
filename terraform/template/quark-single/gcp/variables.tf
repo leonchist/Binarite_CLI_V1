@@ -32,6 +32,10 @@ variable "ansible_inventory_path" {
 variable "known_host_path" {
 }
 
+variable "deployment_folder" {
+  type = string
+}
+
 variable "cloud_region" {
 }
 

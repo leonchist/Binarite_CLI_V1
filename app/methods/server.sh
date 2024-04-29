@@ -114,7 +114,7 @@ apply_server_module() {
     export TF_VAR_git_repository="$git_repository"
     export TF_VAR_git_branch="$git_branch"
     export TF_VAR_project="$project"
-
+    export TF_VAR_deployment_folder=$work_dir
     export TF_VAR_ansible_inventory_path="$work_dir/ansible/inventory/hosts.ini"
     export TF_VAR_known_host_path="$work_dir/known_hosts"
     export ANSIBLE_CONFIG="$ROOT_DIR/ansible.cfg"
@@ -150,6 +150,7 @@ apply_server_module() {
         echo "TF_VAR_git_repository=$TF_VAR_git_repository"
         echo "TF_VAR_git_branch=$TF_VAR_git_branch"
         echo "TF_VAR_project=$TF_VAR_project"
+        echo "TF_VAR_deployment_folder=$work_dir"
         echo "TF_VAR_ansible_inventory_path=$TF_VAR_ansible_inventory_path"
         echo "TF_VAR_known_host_path=$TF_VAR_known_host_path"
         echo "ANSIBLE_CONFIG=$ANSIBLE_CONFIG"
