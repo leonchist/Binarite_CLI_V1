@@ -11,6 +11,7 @@ SETUP_DIR="$APP_DIR/setup"
 echo "Setting executable permissions on scripts..."
 chmod +x "$APP_DIR/cli.sh"
 chmod +x "$APP_DIR/terraform.sh"
+chmod +x "$APP_DIR/region.sh"
 chmod +x "$SETUP_DIR/install.sh"
 chmod +x "$SETUP_DIR/uninstall.sh"
 find "$APP_DIR/methods" -type f -iname "*.sh" -exec chmod +x {} \;
