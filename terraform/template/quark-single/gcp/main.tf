@@ -1,3 +1,7 @@
+locals {
+  metadata = jsondecode(file(var.environment))
+}
+
 resource "google_service_account" "default" {
   account_id   = "platform-service-account"
   display_name = "Platform Service Account"
@@ -13,13 +17,13 @@ locals {
 module "gcp_net" {
   source              = "../../../../terraform/raw_modules/gcp-network"
   local_ip_cidr_range = var.subnet_local_ip_range
-  basename            = var.metadata.Project
-  owner               = var.metadata.Owner
+  basename            = local.metadata.Project
+  owner               = local.metadata.Owner
 }
 
 locals {
-  allow_quark_fw_tag         = "${var.metadata.Project}-quark-fw-${var.metadata.Owner}"
-  allow_quark_metrics_fw_tag = "${var.metadata.Project}-quark-metrics-fw-${var.metadata.Owner}"
+  allow_quark_fw_tag         = "${local.metadata.Project}-quark-fw-${local.metadata.Owner}"
+  allow_quark_metrics_fw_tag = "${local.metadata.Project}-quark-metrics-fw-${local.metadata.Owner}"
 }
 
 resource "google_compute_firewall" "allow_quark" {
@@ -49,9 +53,9 @@ resource "google_compute_firewall" "allow_quark_metrics" {
 
 module "quark" {
   source                = "../../../../terraform/raw_modules/gcp-vm-linux"
-  basename              = var.metadata.Project
+  basename              = local.metadata.Project
   vm_name               = "quark"
-  owner                 = var.metadata.Owner
+  owner                 = local.metadata.Owner
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp_net.subnet_link
   ssh_publickey         = file(var.public_key)
@@ -59,12 +63,12 @@ module "quark" {
   with_public_ip        = true
   tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_quark_fw_tag, local.allow_quark_metrics_fw_tag]
   ssh_username          = var.user
-  metadata              = var.metadata
+  metadata              = local.metadata
   zone                  = local.gcp_zone
 }
 
 locals {
-  allow_grafana_fw_tag = "${var.metadata.Project}-grafana-fw-${var.metadata.Owner}"
+  allow_grafana_fw_tag = "${local.metadata.Project}-grafana-fw-${local.metadata.Owner}"
 }
 
 
@@ -82,24 +86,24 @@ resource "google_compute_firewall" "allow_grafana" {
 
 module "grafana" {
   source                = "../../../../terraform/raw_modules/gcp-vm-linux"
-  basename              = var.metadata.Project
+  basename              = local.metadata.Project
   vm_name               = "grafana"
-  owner                 = var.metadata.Owner
+  owner                 = local.metadata.Owner
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp_net.subnet_link
   ssh_publickey         = file(var.public_key)
   with_public_ip        = true
   tags                  = [module.gcp_net.allow_ssh_local_fw_tag, local.allow_grafana_fw_tag]
   ssh_username          = var.user
-  metadata              = var.metadata
+  metadata              = local.metadata
   zone                  = local.gcp_zone
 }
 
 module "bastion" {
   source                = "../../../../terraform/raw_modules/gcp-vm-linux"
-  basename              = var.metadata.Project
+  basename              = local.metadata.Project
   vm_name               = "bastion"
-  owner                 = var.metadata.Owner
+  owner                 = local.metadata.Owner
   startup_script        = null
   service_account_email = google_service_account.default.email
   subnet_link           = module.gcp_net.subnet_link
@@ -107,7 +111,7 @@ module "bastion" {
   ssh_publickey         = file(var.public_key)
   tags                  = [module.gcp_net.allow_ssh_fw_tag]
   ssh_username          = var.user
-  metadata              = var.metadata
+  metadata              = local.metadata
   zone                  = local.gcp_zone
 }
 

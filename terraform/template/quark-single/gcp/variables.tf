@@ -33,12 +33,7 @@ variable "known_host_path" {
 variable "cloud_region" {
 }
 
-variable "metadata" {
-  type = object({
-    Env     = string
-    Role    = string
-    Owner   = string
-    Project = string
-    Uuid    = string
-  })
+variable "environment" {
+  description = "Path to the JSON file containing environment metadata"
+  type        = string
 }
