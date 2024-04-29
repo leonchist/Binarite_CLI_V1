@@ -5,7 +5,7 @@ locals {
 resource "aws_eip" "elastic_ip" {
   count  = 3
   domain = "vpc"
-  tags   = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}${local.services[count.index]}ElasticIP_${var.metadata.Owner}" })
+  tags   = merge(local.metadata, { Name = "${local.metadata.Project}_${local.metadata.Role}${local.services[count.index]}ElasticIP_${local.metadata.Owner}" })
 }
 
 resource "aws_eip_association" "eip_assoc_quark" {

@@ -188,19 +188,19 @@ destroy_server() {
         return
     fi
 
-    local work_dir="$HOME/.mg/$uuid"
-    local tf_state="$work_dir/state/terraform.tfstate"
-    local tf_conf="$SCRIPT_DIR/../terraform/template/quark-single/$cloud_provider"
-
-    if [[ -d "$work_dir" && -f "$tf_state" ]]; then
-        pushd "$tf_conf" > /dev/null
-        terraform init -input=false -backend-config="path=$tf_state"
-        terraform destroy -auto-approve -input=false
-        popd > /dev/null
-        echo "Environment with ID $uuid has been destroyed."
-    else
-        echo "Error: Environment with ID $uuid does not exist or state file is missing."
-    fi
+#    local work_dir="$HOME/.mg/$uuid"
+#    local tf_state="$work_dir/state/terraform.tfstate"
+#    local tf_conf="$SCRIPT_DIR/../terraform/template/quark-single/$cloud_provider"
+#
+#    if [[ -d "$work_dir" && -f "$tf_state" ]]; then
+#        pushd "$tf_conf" > /dev/null
+#        terraform init -input=false -backend-config="path=$tf_state"
+#        terraform destroy -auto-approve -input=false
+#        popd > /dev/null
+#        echo "Environment with ID $uuid has been destroyed."
+#    else
+#        echo "Error: Environment with ID $uuid does not exist or state file is missing."
+#    fi
 }
 
 show_inventory() {
@@ -210,21 +210,21 @@ show_inventory() {
         return
     fi
 
-    local base_dir="$HOME/.mg/$uuid"
-    local inventory_file_path="$base_dir/ansible/inventory/hosts.ini" # Default path if not dynamically set
-
-    # Checking if a specific metadata file exists that contains paths set by Terraform
-    if [[ -f "$base_dir/metadata" ]]; then
-        source "$base_dir/metadata"  # Assuming this metadata file exports the path in TF_VAR_ansible_inventory_path
-        inventory_file_path=$TF_VAR_ansible_inventory_path
-    fi
-
-    if [[ -f "$inventory_file_path" ]]; then
-        echo "Displaying ansible inventory for server with ID: $uuid:"
-        cat "$inventory_file_path"
-    else
-        echo "Error: Inventory file does not exist for this UUID at expected path: $inventory_file_path"
-    fi
+#    local base_dir="$HOME/.mg/$uuid"
+#    local inventory_file_path="$base_dir/ansible/inventory/hosts.ini" # Default path if not dynamically set
+#
+#    # Checking if a specific metadata file exists that contains paths set by Terraform
+#    if [[ -f "$base_dir/metadata" ]]; then
+#        source "$base_dir/metadata"  # Assuming this metadata file exports the path in TF_VAR_ansible_inventory_path
+#        inventory_file_path=$TF_VAR_ansible_inventory_path
+#    fi
+#
+#    if [[ -f "$inventory_file_path" ]]; then
+#        echo "Displaying ansible inventory for server with ID: $uuid:"
+#        cat "$inventory_file_path"
+#    else
+#        echo "Error: Inventory file does not exist for this UUID at expected path: $inventory_file_path"
+#    fi
 }
 
 

@@ -24,6 +24,18 @@ else
     exit 1
 fi
 
+check_jq_installed() {
+    if ! command -v jq &> /dev/null; then
+        echo "jq is not installed. Please install jq to continue using this setup."
+        echo "Visit https://stedolan.github.io/jq/download/ for installation instructions."
+        exit 1
+    fi
+    echo "jq is installed."
+}
+
+# Check if jq is installed
+check_jq_installed
+
 echo "Running setup script..."
 "$SETUP_DIR/install.sh"
 

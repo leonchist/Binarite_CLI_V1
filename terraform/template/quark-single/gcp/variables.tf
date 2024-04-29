@@ -30,7 +30,7 @@ variable "ansible_inventory_path" {
 variable "known_host_path" {
 }
 
-variable "server_region" {
+variable "cloud_region" {
 }
 
 variable "metadata" {

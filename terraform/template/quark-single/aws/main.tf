@@ -1,7 +1,11 @@
+locals {
+  metadata = jsondecode(file(var.environment))
+}
+
 resource "aws_key_pair" "ssh_key" {
   public_key = file(var.public_key)
   provider   = aws
-  tags       = merge(var.metadata, { Name = "${var.metadata.Project}_QuarkSshKey_${var.metadata.Owner}" })
+  tags       = merge(local.metadata, { Name = "${local.metadata.Project}_QuarkSshKey_${local.metadata.Owner}" })
 }
 
 module "quark" {
@@ -13,7 +17,7 @@ module "quark" {
   ssh_key_name           = aws_key_pair.ssh_key.key_name
   private_ip             = "10.0.1.100"
   vm_size                = var.quark_vm_size
-  env                    = { tags = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}_QuarkServer_${var.metadata.Owner}", Source = "Terraform" }) }
+  env                    = { tags = merge(local.metadata, { Name = "${local.metadata.Project}_${local.metadata.Role}_QuarkServer_${local.metadata.Owner}", Source = "Terraform" }) }
 
   ssh_username = var.user
 
@@ -32,7 +36,7 @@ module "grafana_prometheus" {
 
   ssh_username = var.user
 
-  env = { tags = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}_GrafanaServer_${var.metadata.Owner}", Source = "Terraform" }) }
+  env = { tags = merge(local.metadata, { Name = "${local.metadata.Project}_${local.metadata.Role}_GrafanaServer_${local.metadata.Owner}", Source = "Terraform" }) }
 
   providers = {
     aws = aws
@@ -49,7 +53,7 @@ module "bastion" {
 
   ssh_username = var.user
 
-  env = { tags = merge(var.metadata, { Name = "${var.metadata.Project}_${var.metadata.Role}_BastionServer_${var.metadata.Owner}", Source = "Terraform" }) }
+  env = { tags = merge(local.metadata, { Name = "${local.metadata.Project}_${local.metadata.Role}_BastionServer_${local.metadata.Owner}", Source = "Terraform" }) }
 
   providers = {
     aws = aws
