@@ -30,14 +30,6 @@
     version: "{{ grafana_git_branch }}"
     dest: "{{ grafana_dir }}"
 
-- name: Copy files from submodule
-  ansible.builtin.copy:
-    src: "{{ role_path }}/files/Grafana-Docker-Deployment/docker-compose"
-    dest: "{{ grafana_dir }}"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: '0644'
-
 - name: Copy templated prometheus config
   ansible.builtin.template:
     src: "{{ role_path }}/templates/prometheus.j2"
