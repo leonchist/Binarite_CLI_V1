@@ -25,8 +25,8 @@ This CLI tool automates the management and deployment of infrastructure using Te
 To install the CLI tool, follow these steps:
 
 0. **Install Dependencies**: 
-   1. Ensure you have Terraform and Ansible installed on your system. This project was tested with Terraform v0.14.7 and Ansible 2.9.10, but newer versions should also be compatible.
-   2. Install the ansible requirements : `ansible-galaxy install -r requirements.yml`
+Ensure you have [Terraform](https://developer.hashicorp.com/terraform/install) and [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.htm) installed on your system. This project was tested with Terraform v0.14.7 and Ansible 2.9.10, but newer versions should also be compatible.
+
 
 1. **Clone the Repository**
    ```bash
@@ -53,6 +53,8 @@ To install the CLI tool, follow these steps:
     ```bash
     ./setup.sh
     ```
+
+5. Install the ansible requirements : `ansible-galaxy install -r requirements.yml` from the root directory of the repo
 
 ## Usage
 
