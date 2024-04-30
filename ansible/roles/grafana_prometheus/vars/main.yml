@@ -1,2 +1,6 @@
 ---
 # vars file for grafana_prometheus
+grafana_dir: /home/{{ ansible_user }}/grafana-prometheus
+# Read only access to this repository, expires on 31-12-2024, owned by thibault
+grafana_git_repo_url: "https://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@github.com/MetaGravity/Grafana-Docker-Deployment.git"
+grafana_git_branch: main
