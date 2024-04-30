@@ -8,7 +8,7 @@ SCRIPT_DIR=$(dirname "$(realpath "$0")")
 SCRIPT_DIR=$(dirname "$SCRIPT_DIR")
 
 TERRAFORM_ENV_PATH="$SCRIPT_DIR/terraform/environment"
-MODULES=("quark_single" "network" "quark" "lb" "bots" "agents" "elastic_ips" "forwarder")
+MODULES=("quark_single")
 
 get_module_path() {
     module_name="$1"
