@@ -106,6 +106,11 @@ set_param() {
     fi
 }
 
+set_credentials() {
+    export GOOGLE_APPLICATION_CREDENTIALS="$ROOT_DIR/.credentials/google.json"
+    export $(cat "$ROOT_DIR/.credentials/aws" | xargs)
+}
+
 apply_server_module() {
     source "$SCRIPT_DIR/terraform.sh"
 
@@ -285,6 +290,7 @@ server() {
             command=$1
             shift  # Remove the command from the arguments list
             set_param "$command" "$@"
+            set_credentials
             "${command}_server"
             ;;
         show)
