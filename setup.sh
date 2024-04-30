@@ -33,8 +33,20 @@ check_jq_installed() {
     echo "jq is installed."
 }
 
-# Check if jq is installed
+check_uuidgen_installed() {
+    if ! command -v uuidgen &> /dev/null; then
+        echo "uuidgen is not installed. Please install uuid-runtime package to continue using this setup."
+        echo "You can install it using your package manager. For example, on Ubuntu, run: sudo apt-get install uuid-runtime"
+        exit 1
+    fi
+    echo "uuidgen is installed."
+}
+
+
+# Check if prerequisites are installed
 check_jq_installed
+check_uuidgen_installed
+
 
 echo "Running setup script..."
 "$SETUP_DIR/install.sh"

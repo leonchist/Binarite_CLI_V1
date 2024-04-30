@@ -31,6 +31,14 @@ usage() {
 # Set parameters based on the command line arguments
 set_param() {
     local project_set=false
+    local require_project=true
+    local command="$1"
+    shift # remove the command from the parameters to process options
+
+    if [[ "$command" == "show"  || "$command" == "destroy" ]]; then
+        require_project=false
+    fi
+
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
             -size)
@@ -73,7 +81,8 @@ set_param() {
                 ;;
         esac
     done
-    if ! $project_set; then
+
+    if ! $project_set && $require_project; then
         echo "Error: Project name is required."
         usage
     fi
@@ -188,19 +197,37 @@ destroy_server() {
         return
     fi
 
-#    local work_dir="$HOME/.mg/$uuid"
-#    local tf_state="$work_dir/state/terraform.tfstate"
-#    local tf_conf="$SCRIPT_DIR/../terraform/template/quark-single/$cloud_provider"
-#
-#    if [[ -d "$work_dir" && -f "$tf_state" ]]; then
-#        pushd "$tf_conf" > /dev/null
-#        terraform init -input=false -backend-config="path=$tf_state"
-#        terraform destroy -auto-approve -input=false
-#        popd > /dev/null
-#        echo "Environment with ID $uuid has been destroyed."
-#    else
-#        echo "Error: Environment with ID $uuid does not exist or state file is missing."
-#    fi
+    local base_dir="$HOME/.mg/$uuid"
+    local meta_file="$base_dir/metadata"
+
+    if [[ -f "$meta_file" ]]; then
+        source "$meta_file"
+    else
+        echo "Error: Metadata file does not exist for this UUID at expected path: $meta_file"
+        return
+    fi
+
+    local tf_conf="$ROOT_DIR/terraform/template/quark-single/$TF_VAR_cloud_provider"
+    local state_file="$base_dir/state/terraform.tfstate"
+    local json_file="$base_dir/creation.json"
+
+    # Check if the configuration directory exists before proceeding
+    if [[ -d "$tf_conf" ]]; then
+        # Initialize Terraform with the specific state file and reconfigure
+        terraform -chdir="$tf_conf" init -input=false -reconfigure -backend-config="path=$state_file"
+
+        # Now run destroy with the required variables
+        terraform -chdir="$tf_conf" destroy -input=false -auto-approve \
+            -var "cloud_region=$TF_VAR_cloud_region" \
+            -var "ansible_inventory_path=$TF_VAR_ansible_inventory_path" \
+            -var "public_key=$TF_VAR_public_key" \
+            -var "private_key=$TF_VAR_private_key" \
+            -var "known_host_path=$TF_VAR_known_host_path" \
+            -var "environment=$json_file"
+    else
+        echo "Error: Terraform configuration directory does not exist: $tf_conf"
+        return
+    fi
 }
 
 show_inventory() {
@@ -210,21 +237,21 @@ show_inventory() {
         return
     fi
 
-#    local base_dir="$HOME/.mg/$uuid"
-#    local inventory_file_path="$base_dir/ansible/inventory/hosts.ini" # Default path if not dynamically set
-#
-#    # Checking if a specific metadata file exists that contains paths set by Terraform
-#    if [[ -f "$base_dir/metadata" ]]; then
-#        source "$base_dir/metadata"  # Assuming this metadata file exports the path in TF_VAR_ansible_inventory_path
-#        inventory_file_path=$TF_VAR_ansible_inventory_path
-#    fi
-#
-#    if [[ -f "$inventory_file_path" ]]; then
-#        echo "Displaying ansible inventory for server with ID: $uuid:"
-#        cat "$inventory_file_path"
-#    else
-#        echo "Error: Inventory file does not exist for this UUID at expected path: $inventory_file_path"
-#    fi
+    local base_dir="$HOME/.mg/$uuid"
+    local inventory_file_path="$base_dir/ansible/inventory/hosts.ini"
+
+    if [[ -f "$inventory_file_path" ]]; then
+        echo "Displaying ansible inventory for environment ID $uuid:"
+
+        # Extract Quark and Grafana IP addresses
+        local quark_ip=$(grep -A 1 '\[quark_servers\]' "$inventory_file_path" | tail -n 1)
+        local grafana_ip=$(grep -A 1 '\[grafana\]' "$inventory_file_path" | tail -n 1)
+
+        echo "Quark Server IP: $quark_ip"
+        echo "Grafana IP: $grafana_ip"
+    else
+        echo "Error: Inventory file does not exist for this UUID at expected path: $inventory_file_path"
+    fi
 }
 
 
@@ -233,12 +260,12 @@ server() {
         create|destroy)
             command=$1
             shift  # Remove the command from the arguments list
-            set_param "$@"
+            set_param "$command" "$@"
             "${command}_server"
             ;;
         show)
             shift  # Remove 'show' from the arguments list
-            set_param "$@"
+            set_param "show" "$@"
             show_inventory
             ;;
         help)

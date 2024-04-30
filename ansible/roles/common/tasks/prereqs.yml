@@ -21,6 +21,18 @@
     state: present
   become: true
 
+- name: Install libssl-dev
+  ansible.builtin.apt:
+    name: libssl-dev
+    state: present
+  become: true
+
+- name: Install pkg-config
+  ansible.builtin.apt:
+    name: pkg-config
+    state: present
+  become: true
+
 - name: Check if cargo is installed
   shell: command -v ~/.cargo/bin/cargo
   register: cargo_exists
