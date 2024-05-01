@@ -2,8 +2,7 @@ variable "user" {
   type = string
   default = "metagravity"
 }
-
-variable "server_region" {
+variable "cloud_region" {
   type = string
 }
 
@@ -24,14 +23,9 @@ variable "ansible_inventory_path" {
   type = string
 }
 
-variable "metadata" {
-  type = object({
-    Env     = string
-    Role    = string
-    Owner   = string
-    Project = string
-    Uuid    = string
-  })
+variable "environment" {
+  description = "Path to the JSON file containing environment metadata"
+  type        = string
 }
 
 variable "known_host_path" {

@@ -30,15 +30,10 @@ variable "ansible_inventory_path" {
 variable "known_host_path" {
 }
 
-variable "server_region" {
+variable "cloud_region" {
 }
 
-variable "metadata" {
-  type = object({
-    Env     = string
-    Role    = string
-    Owner   = string
-    Project = string
-    Uuid    = string
-  })
+variable "environment" {
+  description = "Path to the JSON file containing environment metadata"
+  type        = string
 }

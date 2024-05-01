@@ -32,3 +32,4 @@ output "private_ips" {
     bastion : module.bastion.vm_private_ips,
   }
 }
+
