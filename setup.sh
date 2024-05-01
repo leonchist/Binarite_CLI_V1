@@ -42,11 +42,29 @@ check_uuidgen_installed() {
     echo "uuidgen is installed."
 }
 
+check_terraform_installed() {
+    if ! command -v terraform &> /dev/null; then
+        echo "terraform is not installed. Please install terraform package to continue using this setup."
+        echo "Check installation guides for your environment here : https://developer.hashicorp.com/terraform/install"
+        exit 1
+    fi
+    echo "terraform is installed."
+}
+
+check_ansible_installed() {
+    if ! command -v ansible &> /dev/null; then
+        echo "ansible is not installed. Please install ansible package to continue using this setup."
+        echo "Check installation guides for your environment here : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html"
+        exit 1
+    fi
+    echo "ansible is installed."
+}
 
 # Check if prerequisites are installed
 check_jq_installed
 check_uuidgen_installed
-
+check_terraform_installed
+check_ansible_installed
 
 echo "Running setup script..."
 "$SETUP_DIR/install.sh"
