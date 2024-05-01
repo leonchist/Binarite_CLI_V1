@@ -91,10 +91,19 @@ set_param() {
         usage
     fi
 
-    if [[ -n "$private_ssh_key_path" && -f "$private_ssh_key_path" ]]; then
-        public_ssh_key=$(ssh-keygen -f $private_ssh_key_path -y)
+    if [[ -n "$private_ssh_key_path" && ! -f "$private_ssh_key_path" ]]; then
+        echo "Error: private key \"$private_ssh_key_path\" not found."
+        exit 1
     fi
 
+    if [[ -n "$private_ssh_key_path" && -f "$private_ssh_key_path" ]]; then
+        public_ssh_key=$(ssh-keygen -f $private_ssh_key_path -y)
+        retVal=$?
+        if [[ $retVal -ne 0 ]]; then
+            echo "Error: reading private key \"$private_ssh_key_path\"."
+            exit 1
+        fi
+    fi
 }
 
 apply_server_module() {
