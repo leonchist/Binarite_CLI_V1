@@ -225,7 +225,9 @@ destroy_server() {
     local meta_file="$base_dir/metadata"
 
     if [[ -f "$meta_file" ]]; then
+        set -a # https://stackoverflow.com/a/32761920/228634
         source "$meta_file"
+        set +a  # Require export again, if desired.
     else
         echo "Error: Metadata file does not exist for this UUID at expected path: $meta_file"
         return
