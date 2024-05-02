@@ -55,8 +55,6 @@ To install the CLI tool, follow these steps:
     ./setup.sh
     ```
 
-5. Install the ansible requirements : `ansible-galaxy install -r requirements.yml` from the root directory of the repo
-
 ## Usage
 
 After installation, you can use the commands to manage your infrastructure:
