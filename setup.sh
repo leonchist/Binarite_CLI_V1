@@ -70,3 +70,4 @@ echo "Running setup script..."
 "$SETUP_DIR/install.sh"
 
 echo "Setup complete."
+echo "Please run \"source \$HOME/.profile\""
