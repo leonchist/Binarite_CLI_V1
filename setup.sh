@@ -8,7 +8,7 @@ echo "SETUP: Checking .env in directory: $SCRIPT_DIR"
 APP_DIR="$SCRIPT_DIR/app"
 SETUP_DIR="$APP_DIR/setup"
 ANSIBLE_ROLES_PATH="$SCRIPT_DIR/ansible/playbooks/roles"
-ANSIBLE_ROLE_NAME="geerlingguy.docker"
+ANSIBLE_ROLE_FILE="$SCRIPT_DIR/requirements.yml"
 
 echo "Setting executable permissions on scripts..."
 chmod +x "$APP_DIR/cli.sh"
@@ -45,6 +45,15 @@ check_uuidgen_installed() {
     echo "uuidgen is installed."
 }
 
+check_terraform_installed() {
+    if ! command -v terraform &> /dev/null; then
+        echo "terraform is not installed. Please install terraform package to continue using this setup."
+        echo "Check installation guides for your environment here : https://developer.hashicorp.com/terraform/install"
+        exit 1
+    fi
+    echo "terraform is installed."
+}
+
 check_ansible_installed() {
     if ! command -v ansible &> /dev/null; then
         echo "Ansible is not installed. Please install Ansible to continue."
@@ -54,13 +63,13 @@ check_ansible_installed() {
     echo "Ansible is installed."
 }
 
-install_ansible_role() {
-    echo "Installing Ansible role: $ANSIBLE_ROLE_NAME..."
-    ansible-galaxy install "$ANSIBLE_ROLE_NAME" --roles-path "$ANSIBLE_ROLES_PATH"
+install_ansible_roles() {
+    echo "Installing Ansible roles from $ANSIBLE_ROLE_FILE..."
+    ansible-galaxy install -r "$ANSIBLE_ROLE_FILE" --roles-path "$ANSIBLE_ROLES_PATH"
     if [ $? -eq 0 ]; then
-        echo "Ansible role installed successfully."
+        echo "Ansible roles installed successfully."
     else
-        echo "Failed to install Ansible role. Check if Ansible is installed and try again."
+        echo "Failed to install Ansible roles. Check if Ansible is installed and try again."
         exit 1
     fi
 }
@@ -69,6 +78,7 @@ install_ansible_role() {
 # Check if prerequisites are installed
 check_jq_installed
 check_uuidgen_installed
+check_terraform_installed
 check_ansible_installed
 install_ansible_role
 
