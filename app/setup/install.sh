@@ -25,11 +25,6 @@ echo "Script at $CLI_PATH"
 # Ensure the binary directory exists
 mkdir -p "$BIN_DIR"
 
-# Install ansible dependencies
-pushd "$SCRIPT_DIR"
-ansible-galaxy install -r requirements.yml
-popd
-
 # Add the binary directory to PATH if it's not already included
 if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
     echo "Adding $BIN_DIR to the beginning of PATH..."

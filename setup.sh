@@ -7,11 +7,14 @@ echo "SETUP: Checking .env in directory: $SCRIPT_DIR"
 
 APP_DIR="$SCRIPT_DIR/app"
 SETUP_DIR="$APP_DIR/setup"
+ANSIBLE_ROLES_PATH="$SCRIPT_DIR/ansible/playbooks/roles"
+ANSIBLE_ROLE_FILE="$SCRIPT_DIR/requirements.yml"
 
 echo "Setting executable permissions on scripts..."
 chmod +x "$APP_DIR/cli.sh"
 chmod +x "$APP_DIR/terraform.sh"
 chmod +x "$APP_DIR/region.sh"
+chmod +x "$APP_DIR/label.sh"
 chmod +x "$SETUP_DIR/install.sh"
 chmod +x "$SETUP_DIR/uninstall.sh"
 find "$APP_DIR/methods" -type f -iname "*.sh" -exec chmod +x {} \;
@@ -53,18 +56,31 @@ check_terraform_installed() {
 
 check_ansible_installed() {
     if ! command -v ansible &> /dev/null; then
-        echo "ansible is not installed. Please install ansible package to continue using this setup."
-        echo "Check installation guides for your environment here : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html"
+        echo "Ansible is not installed. Please install Ansible to continue."
+        echo "Visit https://docs.ansible.com/ansible/latest/installation_guide/index.html for installation instructions."
         exit 1
     fi
-    echo "ansible is installed."
+    echo "Ansible is installed."
 }
+
+install_ansible_roles() {
+    echo "Installing Ansible roles from $ANSIBLE_ROLE_FILE..."
+    ansible-galaxy install -r "$ANSIBLE_ROLE_FILE" --roles-path "$ANSIBLE_ROLES_PATH"
+    if [ $? -eq 0 ]; then
+        echo "Ansible roles installed successfully."
+    else
+        echo "Failed to install Ansible roles. Check if Ansible is installed and try again."
+        exit 1
+    fi
+}
+
 
 # Check if prerequisites are installed
 check_jq_installed
 check_uuidgen_installed
 check_terraform_installed
 check_ansible_installed
+install_ansible_role
 
 echo "Running setup script..."
 "$SETUP_DIR/install.sh"

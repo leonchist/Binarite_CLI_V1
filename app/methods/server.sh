@@ -4,8 +4,9 @@
 # Get paths
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
-# Source regions
+# Source external methods
 source "$SCRIPT_DIR/region.sh"
+source "$SCRIPT_DIR/label.sh"
 
 # Default values
 instance_size="l"
@@ -17,15 +18,17 @@ git_branch=""
 uuid=$(uuidgen)
 owner=$OWNER
 project=""
+label=""
 public_ssh_key=""
 private_ssh_key_path=""
 
 # Usage function for displaying help
 usage() {
     echo "Usage:"
-    echo "  mg server create -project project_name [-size instance_size] [-count instance_count] [-cloud cloud_provider] [-repo git_repository] [-branch git_branch]  [-region region]"
-    echo "  mg server destroy -id UUID"
-    echo "  mg server show -id UUID"
+    echo "  mg server create -project project_name [-label local_label] [-size instance_size] [-count instance_count] [-cloud cloud_provider] [-repo git_repository] [-branch git_branch]  [-region region]"
+    echo "  mg server destroy -id UUID/label"
+    echo "  mg server show -id UUID/label"
+    echo "  mg server list"
     echo "  mg server help"
     exit 1
 }
@@ -34,11 +37,14 @@ usage() {
 set_param() {
     local project_set=false
     local require_project=true
+    local require_label=true
     local command="$1"
     shift # remove the command from the parameters to process options
 
+
     if [[ "$command" == "show"  || "$command" == "destroy" ]]; then
         require_project=false
+        require_label=false
     fi
 
     while [[ "$#" -gt 0 ]]; do
@@ -77,6 +83,8 @@ set_param() {
                 uuid="$2"; shift 2;;
             -project)
                 project="$2"; project_set=true; shift 2;;
+            -label)
+                label="$2"; shift 2;;
             -private-key)
                 private_ssh_key_path="$2"; shift 2;;
             *)
@@ -94,6 +102,10 @@ set_param() {
     if [[ -n "$private_ssh_key_path" && ! -f "$private_ssh_key_path" ]]; then
         echo "Error: private key \"$private_ssh_key_path\" not found."
         exit 1
+    fi
+
+    if [[ -z "$label" && $require_label == true ]]; then
+        label=$(generate_random_label)
     fi
 
     if [[ -n "$private_ssh_key_path" && -f "$private_ssh_key_path" ]]; then
@@ -137,7 +149,7 @@ apply_server_module() {
 
     tf_state=$work_dir/state/terraform.tfstate
     tf_conf="$ROOT_DIR/terraform/template/quark-single/$cloud_provider"
-
+    creation_date=$(date '+%Y-%m-%d %H:%M:%S')
     # Generate JSON and save to file
     json_file="$work_dir/creation.json"
     jq -n \
@@ -173,6 +185,8 @@ apply_server_module() {
         echo "tf_state=$tf_state"
         echo "tf_conf=$tf_conf"
         echo "JSON_Creation_File=$json_file"
+        echo "Label=$label"
+        echo "CreationDate=\"$creation_date\""
     } > "$meta_file"
 
     if [[ -n $public_ssh_key ]]; then
@@ -203,40 +217,95 @@ apply_server_module() {
 }
 
 create_server() {
-    echo "Starting server setup with the following parameters:"
-    echo "Project Name: $project"
-    echo "Instance Size: $instance_size"
-    echo "Instance Count: $instance_count"
-    echo "Cloud Provider: $cloud_provider"
-    echo "Cloud Region: $cloud_region"
-    echo "Environment ID: $uuid"
-    if [[ -n "$git_repository" ]]; then
-        echo "Repository: $git_repository"
-    fi
-    if [[ -n "$git_branch" ]]; then
-        echo "Branch: $git_branch"
-    fi
+      echo -e "\033[1;32mStarting server setup with the following parameters:\033[0m"
+      echo "------------------------------------------------------------"
+
+      # Project Details
+      echo -e "\033[1;34mProject Details:\033[0m"
+      echo -e "  \033[1;33mProject name:\033[0m $project"
+      if [[ -n "$git_repository" ]]; then
+          echo -e "  \033[1;33mRepository:\033[0m $git_repository"
+          echo -e "  \033[1;33mBranch:\033[0m $git_branch"
+      fi
+
+      # Server Configuration
+      echo -e "\033[1;34mServer Configuration:\033[0m"
+      echo -e "  \033[1;33mInstance size:\033[0m $instance_size"
+      echo -e "  \033[1;33mInstance count:\033[0m $instance_count"
+      echo -e "  \033[1;33mCloud provider:\033[0m $cloud_provider"
+      echo -e "  \033[1;33mCloud region:\033[0m $cloud_region"
+
+      # Environment Details
+      echo -e "\033[1;34mEnvironment:\033[0m"
+      echo -e "  \033[1;33mID:\033[0m $uuid"
+      echo -e "  \033[1;33mLabel:\033[0m $label"
+      echo "------------------------------------------------------------"
 
     apply_server_module
 }
 
-destroy_server() {
-    if [[ -z "$uuid" ]]; then
-        echo "Error: UUID is required."
-        return
+resolve_env() {
+    if [[ -d "$HOME/.mg/$1" ]]; then
+        # Directly use the directory if it exists, assuming $1 is a UUID
+        uuid=$1
+    else
+        # If it's not a UUID, resolve it as a label
+        local metafile=$(find "$HOME/.mg" -type f -name metadata -exec grep -l "Label=$1" {} \;)
+        if [[ -z "$metafile" ]]; then
+            echo "Error: No environment found with the provided identifier."
+            exit 1
+        fi
+        uuid=$(basename $(dirname "$metafile"))
     fi
+
+    # Once the UUID is determined, source the metadata file
+    local metadata_path="$HOME/.mg/$uuid/metadata"
+    if [[ -f "$metadata_path" ]]; then
+        set -a  # Automatically export all variables
+        source "$metadata_path"
+        set +a  # Stop automatic export
+    else
+        echo "Error: Metadata file not found for UUID: $uuid"
+        exit 1
+    fi
+}
+show_server() {
+    local id=$uuid
+    resolve_env "$id"
+
+    local base_dir="$HOME/.mg/$uuid"
+    local state_file_path="$base_dir/state/terraform.tfstate"
+
+    if [[ -f "$state_file_path" ]]; then
+        echo -n "Environment ID resolved to: $uuid"
+        if [[ "$id" != "$uuid" ]]; then
+            echo " / $id"
+        else
+            echo
+        fi
+
+        echo "State file path: $state_file_path"
+
+        # Extract IPs directly from the Terraform state file using modified jq queries
+        local quark_ip=$(jq -r '.resources[] | select(.name=="elastic_ip" and (.instances[].attributes.tags.Name | tostring | endswith("QuarkElasticIP_"))) | .instances[0].attributes.public_ip' "$state_file_path")
+        local grafana_ip=$(jq -r '.resources[] | select(.name=="elastic_ip" and (.instances[].attributes.tags.Name | tostring | endswith("GrafanaElasticIP_"))) | .instances[0].attributes.public_ip' "$state_file_path")
+
+        echo "Quark Server IP: $quark_ip"
+        echo "Grafana IP: $grafana_ip"
+    else
+        echo "Error: State file does not exist for this UUID at the expected path: $state_file_path"
+    fi
+}
+
+
+
+destroy_server() {
+    local id=$uuid
+    resolve_env "$id"
 
     local base_dir="$HOME/.mg/$uuid"
     local meta_file="$base_dir/metadata"
 
-    if [[ -f "$meta_file" ]]; then
-        set -a # https://stackoverflow.com/a/32761920/228634
-        source "$meta_file"
-        set +a  # Require export again, if desired.
-    else
-        echo "Error: Metadata file does not exist for this UUID at expected path: $meta_file"
-        return
-    fi
 
     local tf_conf="$ROOT_DIR/terraform/template/quark-single/$TF_VAR_cloud_provider"
     local state_file="$base_dir/state/terraform.tfstate"
@@ -247,56 +316,51 @@ destroy_server() {
         # Initialize Terraform with the specific state file and reconfigure
         terraform -chdir="$tf_conf" init -input=false -reconfigure -backend-config="path=$state_file"
 
-        # Now run destroy with the required variables
-        terraform -chdir="$tf_conf" destroy -input=false -auto-approve \
+        # Run destroy with the required variables and capture the exit code
+        if terraform -chdir="$tf_conf" destroy -input=false -auto-approve \
             -var "cloud_region=$TF_VAR_cloud_region" \
             -var "ansible_inventory_path=$TF_VAR_ansible_inventory_path" \
             -var "known_host_path=$TF_VAR_known_host_path" \
             -var "environment=$json_file"
+        then
+            echo "Terraform destroy was successful. Removing directory: $base_dir"
+            rm -rf "$base_dir"
+        else
+            echo "Error: Terraform destroy failed. Directory not removed: $base_dir"
+        fi
     else
         echo "Error: Terraform configuration directory does not exist: $tf_conf"
         return
     fi
 }
 
-show_inventory() {
-    if [[ -z "$uuid" ]]; then
-        echo "Error: UUID is required."
-        usage
-        return
-    fi
+list_environments() {
+    echo -e "\033[1;32mListing all environments:\033[0m"
+    local count=1
+    find "$HOME/.mg" -type f -name metadata | while read -r metadata_file; do
+        uuid=$(basename "$(dirname "$metadata_file")")
+        label=$(grep 'Label=' "$metadata_file" | cut -d '=' -f 2)
+        creation_date=$(grep 'CreationDate=' "$metadata_file" | cut -d '=' -f 2)
 
-    local base_dir="$HOME/.mg/$uuid"
-    local inventory_file_path="$base_dir/ansible/inventory/hosts.ini"
-
-    if [[ -f "$inventory_file_path" ]]; then
-        echo "Displaying ansible inventory for environment ID $uuid:"
-
-        # Extract Quark and Grafana IP addresses
-        local quark_ip=$(grep -A 1 '\[quark_servers\]' "$inventory_file_path" | tail -n 1)
-        local grafana_ip=$(grep -A 1 '\[grafana\]' "$inventory_file_path" | tail -n 1)
-
-        echo "Quark Server IP: $quark_ip"
-        echo "Grafana IP: $grafana_ip"
-    else
-        echo "Error: Inventory file does not exist for this UUID at expected path: $inventory_file_path"
-    fi
+        # Print UUID and Label on the same line
+        echo -e "\033[1;33m$count. UUID: \033[1;34m$uuid / \033[1;36m$label\033[0m"
+        echo -e "\033[1;33m   Created on: \033[1;34m$creation_date\033[0m"
+        ((count++))
+    done
 }
 
 
 server() {
     case "$1" in
-        create|destroy)
+        create|destroy|show)
             command=$1
             shift  # Remove the command from the arguments list
             set_param "$command" "$@"
             set_credentials
             "${command}_server"
             ;;
-        show)
-            shift  # Remove 'show' from the arguments list
-            set_param "show" "$@"
-            show_inventory
+        list)
+            list_environments
             ;;
         help)
             usage
