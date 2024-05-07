@@ -269,33 +269,34 @@ resolve_env() {
         exit 1
     fi
 }
-
 show_server() {
     local id=$uuid
     resolve_env "$id"
 
     local base_dir="$HOME/.mg/$uuid"
-    local inventory_file_path="$base_dir/ansible/inventory/hosts.ini"
+    local state_file_path="$base_dir/state/terraform.tfstate"
 
-    if [[ -f "$inventory_file_path" ]]; then
+    if [[ -f "$state_file_path" ]]; then
         echo -n "Environment ID resolved to: $uuid"
-          if [[ "$id" != "$uuid" ]]; then
-              echo " / $id"
-          else
-              echo
-          fi
+        if [[ "$id" != "$uuid" ]]; then
+            echo " / $id"
+        else
+            echo
+        fi
 
-        echo "Inventory file path: $inventory_file_path"
+        echo "State file path: $state_file_path"
 
-        local quark_ip=$(grep -A 1 '\[quark_servers\]' "$inventory_file_path" | tail -n 1)
-        local grafana_ip=$(grep -A 1 '\[grafana\]' "$inventory_file_path" | tail -n 1)
+        # Extract IPs directly from the Terraform state file using modified jq queries
+        local quark_ip=$(jq -r '.resources[] | select(.name=="elastic_ip" and (.instances[].attributes.tags.Name | tostring | endswith("QuarkElasticIP_"))) | .instances[0].attributes.public_ip' "$state_file_path")
+        local grafana_ip=$(jq -r '.resources[] | select(.name=="elastic_ip" and (.instances[].attributes.tags.Name | tostring | endswith("GrafanaElasticIP_"))) | .instances[0].attributes.public_ip' "$state_file_path")
 
         echo "Quark Server IP: $quark_ip"
         echo "Grafana IP: $grafana_ip"
     else
-        echo "Error: Inventory file does not exist for this UUID at the expected path: $inventory_file_path"
+        echo "Error: State file does not exist for this UUID at the expected path: $state_file_path"
     fi
 }
+
 
 
 destroy_server() {
@@ -315,12 +316,18 @@ destroy_server() {
         # Initialize Terraform with the specific state file and reconfigure
         terraform -chdir="$tf_conf" init -input=false -reconfigure -backend-config="path=$state_file"
 
-        # Now run destroy with the required variables
-        terraform -chdir="$tf_conf" destroy -input=false -auto-approve \
+        # Run destroy with the required variables and capture the exit code
+        if terraform -chdir="$tf_conf" destroy -input=false -auto-approve \
             -var "cloud_region=$TF_VAR_cloud_region" \
             -var "ansible_inventory_path=$TF_VAR_ansible_inventory_path" \
             -var "known_host_path=$TF_VAR_known_host_path" \
             -var "environment=$json_file"
+        then
+            echo "Terraform destroy was successful. Removing directory: $base_dir"
+            rm -rf "$base_dir"
+        else
+            echo "Error: Terraform destroy failed. Directory not removed: $base_dir"
+        fi
     else
         echo "Error: Terraform configuration directory does not exist: $tf_conf"
         return
