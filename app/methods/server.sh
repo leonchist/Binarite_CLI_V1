@@ -119,7 +119,7 @@ set_param() {
 }
 
 set_credentials() {
-    export GOOGLE_APPLICATION_CREDENTIALS="$ROOT_DIR/.credentials/google.json"
+    export GOOGLE_APPLICATION_CREDENTIALS="$ROOT_DIR/.credentials/gcloud.json"
     export $(cat "$ROOT_DIR/.credentials/aws" | xargs)
 }
 
