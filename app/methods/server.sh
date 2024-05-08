@@ -288,12 +288,6 @@ show_server() {
         echo "State file path: $state_file_path"
         local ips=$(jq -r '.outputs.public_ips.value' "$state_file_path")
         echo "Public IPs: $ips"
-#        # Extract IPs directly from the Terraform state file using modified jq queries
-#        local quark_ip=$(jq -r '.resources[] | select(.name=="elastic_ip" and (.instances[].attributes.tags.Name | tostring | endswith("QuarkElasticIP_"))) | .instances[0].attributes.public_ip' "$state_file_path")
-#        local grafana_ip=$(jq -r '.resources[] | select(.name=="elastic_ip" and (.instances[].attributes.tags.Name | tostring | endswith("GrafanaElasticIP_"))) | .instances[0].attributes.public_ip' "$state_file_path")
-#
-#        echo "Quark Server IP: $quark_ip"
-#        echo "Grafana IP: $grafana_ip"
     else
         echo "Error: State file does not exist for this UUID at the expected path: $state_file_path"
     fi
