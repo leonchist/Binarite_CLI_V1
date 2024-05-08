@@ -107,9 +107,9 @@ After installation, you can use the commands to manage your infrastructure:
    ```
 
 ## Examples
-- `mg servier create -project MyProject -size large -count 2 -cloud aws -repo https://github.com/myrepo -branch develop -region us-west-2`
-- `mg servier destroy -id 123e4567-e89b-12d3-a456-426614174000`
-- `mg servier show -id banan-center-1`
+- `mg server create -project MyProject -size large -count 2 -cloud aws -repo https://github.com/myrepo -branch develop -region us-west-2`
+- `mg server destroy -id 123e4567-e89b-12d3-a456-426614174000`
+- `mg server show -id banan-center-1`
 
 ## Contributing
 
