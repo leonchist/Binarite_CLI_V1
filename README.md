@@ -32,7 +32,8 @@ To install the CLI tool, follow these steps:
 1. **Clone the Repository**
    ```bash
    git clone https://yourrepository.com/path/to/repo.git
-   cd repo-directory```
+   cd repo-directory
+   ```
 
 
 2. **Configure Environment Variables**:
@@ -49,41 +50,66 @@ To install the CLI tool, follow these steps:
     ```bash
     chmod +x ./setup.sh
     ```
+   
 4. **Run Setup Script**: Execute the setup script which will configure permissions and install the CLI tool:
 
     ```bash
     ./setup.sh
     ```
 
+5. **Source links**: Refresh links in current terminal session:
+
+    ```bash
+    source ~/.zshrc
+    ```
+   or
+    ```bash
+    source ~/.bash_profile
+    ```
+
 ## Usage
 
 After installation, you can use the commands to manage your infrastructure:
 
-- **Initialize Modules**
+- **Create Command**: Initializes and provisions a new server.
   ```bash
-  mg init
+  mg create [OPTIONS]
+   ```
+  Options:
+  - `project <project_name>`: **[REQUIRED]** Specify the project name for the server.
+  - `size <instance_size>`: **[OPTIONAL]** Specify the size of the server instance (Default: 'medium').
+  - `count <instance_count>`: **[OPTIONAL]** Specify the number of instances to create (Default: 1).
+  - `cloud <cloud_provider>`: **[OPTIONAL]** Specify the cloud provider (e.g., 'aws', 'gcp', 'azure') (Default: 'gcp').
+  - `repo <git_repository>`: **[OPTIONAL]** Specify the Git repository URL for configuration.
+  - `branch <git_branch>`: **[OPTIONAL]** Specify the branch to use from the Git repository (Default: 'master').
+  - `region <region>`: **[OPTIONAL]** Specify the region where the server will be created (Default depends on provider).
+  - `label <local_label>`: **[OPTIONAL]** Specify the local label for the server (Default: automatically generated).
+  
+
+- **Destroy Command**: Terminates a server identified by its UUID or applied LABEL.
+  ```bash
+  mg destroy -id <UUID>
    ```
 
-- **Destroy Resources**
+- **Show Environment Details**: Displays information about a server identified by its UUID or applied LABEL.
   ```bash
-  mg destroy [module_name|all]
+  mg show -id <UUID>
+   ```
+  
+- **List Environments**: Lists all available servers.
+  ```bash
+  mg list
    ```
 
-- **List Environments**
-  ```bash
-  mg list_envs
-   ```
-
-- **Destroy Specific Environment**
-  ```bash
-   mg destroy_env [eu|us]
-   ```  
-
-- **Help**
+- **Help**: Displays this help information.
   ```bash
    mg help
    ```
 
+## Examples
+- `mg create -project MyProject -size large -count 2 -cloud aws -repo https://github.com/myrepo -branch develop -region us-west-2`
+- `mg destroy -id 123e4567-e89b-12d3-a456-426614174000`
+- `mg show -id banan-center-1`
 
 ## Contributing
 
