@@ -31,8 +31,8 @@ To install the CLI tool, follow these steps:
 
 1. **Clone the Repository**
    ```bash
-   git clone https://yourrepository.com/path/to/repo.git
-   cd repo-directory
+   git clone git@github.com:MetaGravity/mg_cli.git
+   cd mg_cli
    ```
 
 
