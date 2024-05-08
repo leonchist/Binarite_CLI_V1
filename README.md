@@ -24,7 +24,7 @@ This CLI tool automates the management and deployment of infrastructure using Te
 
 To install the CLI tool, follow these steps:
 
-0. **Install Dependencies**: 
+0. **Install Dependencies**:
 
    Ensure you have [Terraform](https://developer.hashicorp.com/terraform/install) and [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) installed on your system. This project was tested with Terraform v0.14.7 and Ansible 2.9.10, but newer versions should also be compatible.
 
@@ -37,8 +37,8 @@ To install the CLI tool, follow these steps:
 
 
 2. **Configure Environment Variables**:
-   - Copy `.env.template` to `.env`.
-   - Fill in your AWS credentials and desired command name for the manager script in `.env`.
+    - Copy `.env.template` to `.env`.
+    - Fill in your AWS credentials and desired command name for the manager script in `.env`.
 
     ```bash
     cp .env.template .env
@@ -50,7 +50,7 @@ To install the CLI tool, follow these steps:
     ```bash
     chmod +x ./setup.sh
     ```
-   
+
 4. **Run Setup Script**: Execute the setup script which will configure permissions and install the CLI tool:
 
     ```bash
@@ -73,32 +73,32 @@ After installation, you can use the commands to manage your infrastructure:
 
 - **Create Command**: Initializes and provisions a new server.
   ```bash
-  mg create [OPTIONS]
+  mg server create [OPTIONS]
    ```
   Options:
-  - `project <project_name>`: **[REQUIRED]** Specify the project name for the server.
-  - `size <instance_size>`: **[OPTIONAL]** Specify the size of the server instance (Default: 'medium').
-  - `count <instance_count>`: **[OPTIONAL]** Specify the number of instances to create (Default: 1).
-  - `cloud <cloud_provider>`: **[OPTIONAL]** Specify the cloud provider (e.g., 'aws', 'gcp', 'azure') (Default: 'gcp').
-  - `repo <git_repository>`: **[OPTIONAL]** Specify the Git repository URL for configuration.
-  - `branch <git_branch>`: **[OPTIONAL]** Specify the branch to use from the Git repository (Default: 'master').
-  - `region <region>`: **[OPTIONAL]** Specify the region where the server will be created (Default depends on provider).
-  - `label <local_label>`: **[OPTIONAL]** Specify the local label for the server (Default: automatically generated).
-  
+    - `project <project_name>`: **[REQUIRED]** Specify the project name for the server.
+    - `size <instance_size>`: **[OPTIONAL]** Specify the size of the server instance (Default: 'medium').
+    - `count <instance_count>`: **[OPTIONAL]** Specify the number of instances to create (Default: 1).
+    - `cloud <cloud_provider>`: **[OPTIONAL]** Specify the cloud provider (e.g., 'aws', 'gcp', 'azure') (Default: 'gcp').
+    - `repo <git_repository>`: **[OPTIONAL]** Specify the Git repository URL for configuration.
+    - `branch <git_branch>`: **[OPTIONAL]** Specify the branch to use from the Git repository (Default: 'master').
+    - `region <region>`: **[OPTIONAL]** Specify the region where the server will be created (Default depends on provider).
+    - `label <local_label>`: **[OPTIONAL]** Specify the local label for the server (Default: automatically generated).
+
 
 - **Destroy Command**: Terminates a server identified by its UUID or applied LABEL.
   ```bash
-  mg destroy -id <UUID>
+  mg server destroy -id <UUID>
    ```
 
 - **Show Environment Details**: Displays information about a server identified by its UUID or applied LABEL.
   ```bash
-  mg show -id <UUID>
+  mg server show -id <UUID>
    ```
-  
+
 - **List Environments**: Lists all available servers.
   ```bash
-  mg list
+  mg server list
    ```
 
 - **Help**: Displays this help information.
@@ -107,9 +107,9 @@ After installation, you can use the commands to manage your infrastructure:
    ```
 
 ## Examples
-- `mg create -project MyProject -size large -count 2 -cloud aws -repo https://github.com/myrepo -branch develop -region us-west-2`
-- `mg destroy -id 123e4567-e89b-12d3-a456-426614174000`
-- `mg show -id banan-center-1`
+- `mg server create -project MyProject -size large -count 2 -cloud aws -repo https://github.com/myrepo -branch develop -region us-west-2`
+- `mg server destroy -id 123e4567-e89b-12d3-a456-426614174000`
+- `mg server show -id banan-center-1`
 
 ## Contributing
 
