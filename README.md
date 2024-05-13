@@ -56,6 +56,9 @@ To install the CLI tool, follow these steps:
     ```bash
     ./setup.sh
     ```
+    ```bash
+    source $HOME/.profile
+    ```
 
 5. **Source links**: Refresh links in current terminal session:
 

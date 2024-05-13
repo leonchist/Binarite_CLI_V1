@@ -86,3 +86,6 @@ echo "Running setup script..."
 "$SETUP_DIR/install.sh"
 
 echo "Setup complete."
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+    echo "Please run \"source \$HOME/.profile\" to make the environment variables you set work well without login/logout"
+fi
