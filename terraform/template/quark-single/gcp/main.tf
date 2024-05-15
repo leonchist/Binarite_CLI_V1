@@ -3,8 +3,8 @@ locals {
 }
 
 resource "google_service_account" "default" {
-  account_id   = "platform-service-account"
-  display_name = "Platform Service Account"
+  account_id   = "${local.metadata.Project}-sa-${local.metadata.Owner}"
+  display_name = "${local.metadata.Project} Service Account (${local.metadata.Owner})"
 }
 
 data "google_compute_zones" "available" {
