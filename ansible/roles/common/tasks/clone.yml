@@ -5,6 +5,6 @@
 
 - name: Clone Git repository
   ansible.builtin.git:
-    repo: "{{ git_repo_url }}"
+    repo: "https://{{ git_quark_pat }}@{{ git_repo_url }}"
     version: "{{ git_branch }}"
     dest: "{{ quark_dir }}"
