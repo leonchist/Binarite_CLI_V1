@@ -79,8 +79,8 @@ module "bastion" {
 
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/../common/ansible/inventory.ini.tpl", {
-    quark_ip     = module.quark.vm_private_ips[0]
-    grafana_ip   = module.grafana_prometheus.vm_private_ips[0],
+    quark_ip     = module.quark.vm_private_ips
+    grafana_ip   = module.grafana_prometheus.vm_private_ips,
     bastion_ip   = aws_eip.elastic_ip[2].public_ip,
     ansible_user = var.user,
     private_key  = abspath(local.private_key_path)
