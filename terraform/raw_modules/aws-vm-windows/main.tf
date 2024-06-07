@@ -1,7 +1,7 @@
 
 
 module "aws-vm-windows" {
-  source  = "../../modules/aws-vm-base"
+  source  = "../aws-vm-base"
   vm_ami  = var.ami_id
   vm_name = var.vm_name
   vm_size = var.vm_size
@@ -17,5 +17,5 @@ module "aws-vm-windows" {
   subnet_id              = var.subnet_id
   vm_user_data           = var.vm_user_data
 
-  env = var.env
+  env                    = var.env
 }

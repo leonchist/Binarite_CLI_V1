@@ -7,6 +7,8 @@ variable "env" {
       App     = string
       Project = string
       Role    = string
+      Name    = string
+      Uuid    = string
     })
   })
 
@@ -18,6 +20,8 @@ variable "env" {
       App     = ""
       Project = ""
       Role    = ""
+      Name    = ""
+      Uuid    = ""
     }
   }
 }
