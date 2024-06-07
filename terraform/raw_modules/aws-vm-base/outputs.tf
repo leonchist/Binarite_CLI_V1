@@ -5,13 +5,13 @@ output "vm_id" {
 
 output "vm_public_ips" {
   description = "Public ips of the VM"
-  value       = aws_instance.vm.*.public_ip
+  value       = aws_instance.vm.public_ip
 
 }
 
 output "vm_private_ips" {
   description = "Private ips of the VM"
-  value       = aws_instance.vm.*.private_ip
+  value       = aws_instance.vm.private_ip
 }
 
 output "password_data" {
