@@ -1,0 +1,17 @@
+
+- name: Install EoC Bot Dependencies
+  win_chocolatey:
+    name:
+      - dotnet4.7
+      - vcredist140
+      - vcredist2017
+      - directx
+      - python
+      - aria2
+      - nssm
+      - 7zip
+      - vscode
+
+- name: Reboot windows to get new $env:PATH
+  ansible.windows.win_reboot:
+  

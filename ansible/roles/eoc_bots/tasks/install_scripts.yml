@@ -1,0 +1,17 @@
+- name: Download EoC scripts
+  ansible.windows.win_get_url:
+    url: '{{ eoc_scripts_url }}'
+    dest: '{{ eoc_scripts_archive }}'
+
+- name: Extract EoC scripts
+  community.windows.win_unzip:
+    src: '{{ eoc_scripts_archive }}'
+    dest: '{{ eoc_scripts_dest }}'
+
+- name: Setup config_bots.json from template
+  ansible.windows.win_template:
+    src: "{{ role_path }}/templates/config_bots.json.j2"
+    dest: '{{ eoc_scripts_config_bots_path }}'
+
+- name: Install scripts python requirements
+  ansible.windows.win_shell: pip install -r {{ eoc_scripts_dest }}\Scripts\Prereqs\requirements.txt

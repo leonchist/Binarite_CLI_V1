@@ -1,0 +1,9 @@
+- name: Configure Windows pre-requisites
+  hosts: eoc_bots
+  roles:
+    - win_host
+
+- name: Setup EoC Bots
+  hosts: eoc_bots
+  roles:
+    - eoc_bots

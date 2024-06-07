@@ -1,0 +1,8 @@
+- name: Install Edge of Chaos service
+  community.windows.win_nssm:
+    name: eoc-bots
+    application: C:\EoC\Scripts\Runners\BotRunner.cmd
+    stdout_file: C:\EoC\service.log
+    stderr_file: C:\EoC\service-error.log
+    arguments: '"C:\EoC\Scripts\Configs\Concept\ScaleTest\Large\config_Concept_A3_1..5 [480].json"'
+    state: started

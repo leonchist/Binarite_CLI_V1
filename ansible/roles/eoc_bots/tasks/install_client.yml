@@ -1,0 +1,9 @@
+- name: Download EoC client
+  ansible.windows.win_get_url:
+    url: '{{ eoc_client_url }}'
+    dest: '{{ eoc_client_archive }}'
+
+- name: Extract EoC client
+  community.windows.win_unzip:
+    src: '{{ eoc_client_archive }}'
+    dest: '{{ eoc_client_dest }}'
