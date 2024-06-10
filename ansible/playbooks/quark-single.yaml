@@ -1,0 +1,30 @@
+---
+- name: Wait for Bastion to be up
+  hosts: bastion
+  gather_facts: no
+  tasks:
+    - name: Import linux pretask
+      import_tasks: 'pretask_linux.yaml'
+
+- name: Configure Quark servers
+  hosts: quark_servers
+  gather_facts: no
+  roles:
+    - quark_server
+  pre_tasks:
+  - name: Import linux pretask
+    delegate_to: bastion-host
+    import_tasks: 'pretask_linux.yaml'
+
+- name: Install Docker and Docker Compose
+  hosts: grafana
+  gather_facts: no
+  become: yes
+  roles:
+    - grafana_prometheus
+  pre_tasks:
+  - name: Import linux pretask
+    delegate_to: bastion-host
+    import_tasks: 'pretask_linux.yaml'
+
+# "{{ groups['quark_servers'] }}"

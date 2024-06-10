@@ -1,0 +1,14 @@
+
+- name: Wait for system to become reachable
+  ansible.builtin.wait_for_connection:
+
+- name: Gather facts for first time
+  ansible.builtin.setup:
+
+- name: Wait for cloud init to finish
+  community.general.cloud_init_data_facts:
+    filter: status
+  register: res
+  until: "res.cloud_init_data_facts.status.v1.stage is defined and not res.cloud_init_data_facts.status.v1.stage"
+  retries: 50
+  delay: 5
