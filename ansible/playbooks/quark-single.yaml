@@ -1,6 +1,7 @@
 ---
 - name: Wait for Bastion to be up
   hosts: bastion
+  # Disable gather_facts as ssh won't be ready yet
   gather_facts: no
   tasks:
     - name: Import linux pretask

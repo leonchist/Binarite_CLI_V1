@@ -1,7 +1,3 @@
-- name: Include win_host
-  ansible.builtin.include_role:
-    name: win_host
-
 - name: Include vars
   ansible.builtin.include_vars: ../vars.yml
 

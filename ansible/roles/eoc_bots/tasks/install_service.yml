@@ -1,8 +1,28 @@
+- name: Read arguments from json file
+  set_fact:
+    json: "{{ lookup('file','{{ command_line_file }}') | from_json }}"
+
+- name: Get host group size
+  set_fact:
+    command_line_count: "{{ json | length }}"
+
+- name: Determine host index
+  set_fact:
+    instruction_index: "{{ groups['eoc_bots'].index(inventory_hostname) % (command_line_count | int) }}"
+
+- name: Get host command line paraneter
+  set_fact:
+    command_line: '{{ json[instruction_index | int] }}'
+
+- name: Command lines used per host
+  debug:
+    var: command_line
+
 - name: Install Edge of Chaos service
   community.windows.win_nssm:
     name: eoc-bots
     application: C:\EoC\Scripts\Runners\BotRunner.cmd
     stdout_file: C:\EoC\service.log
     stderr_file: C:\EoC\service-error.log
-    arguments: '"C:\EoC\Scripts\Configs\Concept\ScaleTest\Large\config_Concept_A3_1..5 [480].json"'
+    arguments: '"{{ eoc_scripts_dest }}\Scripts\Configs\{{ command_line }}"'
     state: started

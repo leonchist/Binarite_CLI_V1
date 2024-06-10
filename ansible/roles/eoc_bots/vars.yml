@@ -8,3 +8,5 @@ eoc_scripts_url : https://unreal-template-dev.s3.eu-west-1.amazonaws.com/Scripts
 eoc_scripts_archive : '{{ eoc_temp_dir }}\eoc_scripts.7z'
 eoc_scripts_dest : 'C:\EoC'
 eoc_scripts_config_bots_path : 'C:\EoC\Scripts\Runners\config_bots.json'
+
+command_line_file: '{{ role_path }}/files/Concept_ScaleTest_large.json'
