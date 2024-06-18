@@ -1,6 +1,3 @@
-- name: Include vars
-  ansible.builtin.include_vars: ../vars.yml
-
 - name: Create temp directory 
   ansible.windows.win_file:
     path:  '{{ eoc_temp_dir }}'
