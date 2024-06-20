@@ -1,0 +1,16 @@
+- name: Create temp directory 
+  ansible.windows.win_file:
+    path:  '{{ eoc_temp_dir }}'
+    state: directory
+
+- name: Include dependencies
+  ansible.builtin.include_tasks: ./dependencies.yml
+
+- name: Include install_client
+  ansible.builtin.include_tasks: ./install_client.yml
+
+- name: Include install_scripts
+  ansible.builtin.include_tasks: ./install_scripts.yml
+
+- name: Include install_service
+  ansible.builtin.include_tasks: ./install_service.yml

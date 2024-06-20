@@ -1,0 +1,12 @@
+---
+- name: Setup EoC Agents
+  hosts: eoc_agents
+  # Disable gather_facts as ssh won't be ready yet
+  gather_facts: no
+  roles:
+    - eoc_agents
+  pre_tasks:
+    - name: Import windows pretask
+      include_tasks: 'pretask_windows.yaml'
+
+# "{{ groups['eoc_agents'] }}"

@@ -1,0 +1,4 @@
+# roles/eoc_bots/meta/main.yml
+---
+dependencies:
+  - role: win_host

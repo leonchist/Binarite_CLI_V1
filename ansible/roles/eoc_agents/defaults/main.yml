@@ -1,0 +1,12 @@
+eoc_temp_dir: 'C:\Temp'
+
+eoc_client_url : https://unreal-template-dev.s3.eu-west-1.amazonaws.com/EdgeOfChaos-develop-Shipping.7z
+eoc_client_archive : '{{ eoc_temp_dir }}\eoc.7z'
+eoc_client_dest : 'C:\EoC\Build'
+
+eoc_scripts_url : https://unreal-template-dev.s3.eu-west-1.amazonaws.com/Scripts_20240620.7z
+eoc_scripts_archive : '{{ eoc_temp_dir }}\eoc_scripts.7z'
+eoc_scripts_dest : 'C:\EoC'
+eoc_scripts_config_agents_path : 'C:\EoC\Scripts\Runners\config_agents.json'
+
+agents_configuration : 'Configs\Agents\config_agents_cinematic.json'

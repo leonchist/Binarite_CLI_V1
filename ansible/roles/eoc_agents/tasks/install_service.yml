@@ -1,0 +1,8 @@
+- name: Install Edge of Chaos agents service
+  community.windows.win_nssm:
+    name: eoc-agents
+    application: C:\EoC\Scripts\Runners\AgentRunner.cmd
+    stdout_file: C:\EoC\service.log
+    stderr_file: C:\EoC\service-error.log
+    arguments: '"{{ eoc_scripts_dest }}\Scripts\{{ agents_configuration }}"'
+    state: started
