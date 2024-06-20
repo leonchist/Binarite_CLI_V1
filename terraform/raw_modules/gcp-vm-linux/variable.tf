@@ -41,10 +41,10 @@ variable "image_name" {
 variable "available_vm_size" {
   type = map(string)
   default = {
-    s  = "f1-micro"
-    m  = "c2-standard-4"
-    l  = "c2-standard-16"
-    xl = "c2-standard-60"
+    s  = "c3d-standard-8"
+    m  = "c3d-standard-16"
+    l  = "c3d-standard-30"
+    xl = "c3d-standard-60"
   }
 }
 

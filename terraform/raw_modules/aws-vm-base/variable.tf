@@ -55,10 +55,10 @@ variable "vm_name" {
 variable "available_vm_size" {
   type = map(string)
   default = {
-    s  = "t3.micro"
-    m  = "c5.large"
-    l  = "c5.4xlarge"
-    xl = "c5.12xlarge"
+    s  = "m7i.2xlarge"
+    m  = "m7i.4xlarge"
+    l  = "m7i.8xlarge"
+    xl = "m7i.16xlarge"
   }
 }
 
