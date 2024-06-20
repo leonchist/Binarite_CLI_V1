@@ -4,7 +4,7 @@ eoc_client_url : https://unreal-template-dev.s3.eu-west-1.amazonaws.com/EdgeOfCh
 eoc_client_archive : '{{ eoc_temp_dir }}\eoc.7z'
 eoc_client_dest : 'C:\EoC\Build'
 
-eoc_scripts_url : https://unreal-template-dev.s3.eu-west-1.amazonaws.com/Scripts_20240426.7z
+eoc_scripts_url : https://unreal-template-dev.s3.eu-west-1.amazonaws.com/Scripts_20240620.7z
 eoc_scripts_archive : '{{ eoc_temp_dir }}\eoc_scripts.7z'
 eoc_scripts_dest : 'C:\EoC'
 eoc_scripts_config_bots_path : 'C:\EoC\Scripts\Runners\config_bots.json'
